@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaTrash, FaFilter } from 'react-icons/fa';
+import { FaTrash, FaFilter, FaWhatsapp } from 'react-icons/fa';
 import { Button, Modal } from "react-bootstrap";
 import { Helmet } from "react-helmet";
 function Dead({ selectedItem }) {
@@ -1602,6 +1602,25 @@ function Dead({ selectedItem }) {
                       📞
                     </button>
                   </a>
+
+                  <a
+  href={`https://wa.me/${selectedLead?.mobilenumber}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  style={{ textDecoration: "none", marginLeft: "10px" }}
+>
+  <button
+    style={{
+      backgroundColor: "transparent",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "1.5rem",
+      color: "green", // WhatsApp color
+    }}
+  >
+    <FaWhatsapp />
+  </button>
+</a>
                   {adminData?.role === "admin" && (
                     <button
                       onClick={handleDelete}
@@ -2415,6 +2434,25 @@ function Dead({ selectedItem }) {
                   📞
                 </button>
               </a>
+
+              <a
+  href={`https://wa.me/${selectedLead?.mobilenumber}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  style={{ textDecoration: "none", marginLeft: "10px" }}
+>
+  <button
+    style={{
+      backgroundColor: "transparent",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "1.5rem",
+      color: "green", // WhatsApp color
+    }}
+  >
+    <FaWhatsapp />
+  </button>
+</a>
 
               {/* Delete Button for Admin */}
               {adminData?.role === "admin" && (

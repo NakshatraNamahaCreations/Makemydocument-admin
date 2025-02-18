@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button, Modal } from "react-bootstrap";
-import { FaTrash , FaFilter} from 'react-icons/fa';
+import { FaTrash , FaFilter, FaWhatsapp} from 'react-icons/fa';
 import { Helmet } from "react-helmet";
 
 function TodayFollowUp({selectedItem}) {
@@ -1667,6 +1667,25 @@ function TodayFollowUp({selectedItem}) {
     📞
   </button>
 </a>
+
+<a
+  href={`https://wa.me/${selectedLead?.mobilenumber}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  style={{ textDecoration: "none", marginLeft: "10px" }}
+>
+  <button
+    style={{
+      backgroundColor: "transparent",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "1.5rem",
+      color: "green", // WhatsApp color
+    }}
+  >
+    <FaWhatsapp />
+  </button>
+</a>
                             
                           
                             {adminData?.role === "admin" && ( 
@@ -2479,6 +2498,25 @@ function TodayFollowUp({selectedItem}) {
     }}
   >
     📞
+  </button>
+</a>
+
+<a
+  href={`https://wa.me/${selectedLead?.mobilenumber}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  style={{ textDecoration: "none", marginLeft: "10px" }}
+>
+  <button
+    style={{
+      backgroundColor: "transparent",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "1.5rem",
+      color: "green", // WhatsApp color
+    }}
+  >
+    <FaWhatsapp />
   </button>
 </a>
     
