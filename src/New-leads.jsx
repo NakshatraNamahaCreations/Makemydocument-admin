@@ -579,150 +579,84 @@ function NewLeads({ selectedItem }) {
 
             {/* Table */}
             <table className="leads-table" style={{ width: "100%" }}>
-              <thead>
-                <tr style={styles.tableHeaderRow}>
-                  <th style={styles.tableHeader}>Sl.No</th>
-                  <th style={styles.tableHeader}>
-                    Date{" "}
-                    <FaFilter
-                      style={styles.icon}
-                      onClick={() => handleFilterClick("date")}
-                    />
-                  </th>
-                  <th style={styles.tableHeader}>
-                    Name{" "}
-                    <FaFilter
-                      style={styles.icon}
-                      onClick={() => handleFilterClick("name")}
-                    />
-                  </th>
-                  <th style={styles.tableHeader}>
-                    District{" "}
-                    <FaFilter
-                      style={styles.icon}
-                      onClick={() => handleFilterClick("district")}
-                    />
-                  </th>
-                  <th style={styles.tableHeader}>
-                    Mobile Number{" "}
-                    <FaFilter
-                      style={styles.icon}
-                      onClick={() => handleFilterClick("mobileNumber")}
-                    />
-                  </th>
-                  <th style={styles.tableHeader}>
-                    Service{" "}
-                    <FaFilter
-                      style={styles.icon}
-                      onClick={() => handleFilterClick("service")}
-                    />
-                  </th>
-                  <th style={styles.tableHeader}>
-                    Paid Amount <FaFilter style={styles.icon} />
-                  </th>
-                  <th style={styles.tableHeader}>
-                    Status <FaFilter style={styles.icon} />
-                  </th>
-
-                  {/* Render Assign column only for admin */}
-                  {adminData?.role === "admin" && (
-                    <th style={styles.tableHeader}>Assign</th>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {currentLeads.map((lead, index) => (
-                  <tr key={index} style={styles.tableRow}>
-                    <td
-                      style={styles.tableCell}
-                      onClick={() => handleRowClick(lead)}
-                    >
-                      {index + 1 + (currentPage - 1) * leadsPerPage}
-                    </td>
-                    <td
-                      style={{ ...styles.tableCell, whiteSpace: "nowrap" }}
-                      onClick={() => handleRowClick(lead)}
-                    >
-                      {lead.date}
-                    </td>
-                    <td
-                      style={styles.tableCell}
-                      onClick={() => handleRowClick(lead)}
-                    >
-                      {lead.name}
-                    </td>
-                    <td
-                      style={styles.tableCell}
-                      onClick={() => handleRowClick(lead)}
-                    >
-                      {lead.district}
-                    </td>
-                    <td
-                      style={styles.tableCell}
-                      onClick={() => handleRowClick(lead)}
-                    >
-                      {lead.mobilenumber}
-                    </td>
-                    <td
-                      style={styles.tableCell}
-                      onClick={() => handleRowClick(lead)}
-                    >
-                      {lead.service}
-                    </td>
-                    <td
-                      style={styles.tableCell}
-                      onClick={() => handleRowClick(lead)}
-                    >
-                      {lead.paidAmount || "0"}
-                    </td>
-                    <td
-                      style={styles.tableCell}
-                      onClick={() => handleRowClick(lead)}
-                    >
-                      <button
-                        style={{
-                          ...styles.statusButton,
-                          backgroundColor:
-                            lead.paymentStatus?.trim().toLowerCase() === "paid"
-                              ? "#4CAF50"
-                              : "#ff9800",
-                        }}
-                        disabled={
-                          lead.paymentStatus?.trim().toLowerCase() === "paid"
-                        }
-                      >
-                        {lead.paymentStatus ? lead.paymentStatus : "unpaid"}
-                      </button>
-                    </td>
-
-                    {/* Render Assign dropdown only for admin */}
-                    {adminData?.role === "admin" && (
-                      <td>
-                        <select
-                          value={lead.assign}
-                          onChange={(e) =>
-                            handleAssignChange(
-                              indexOfFirstLead + index,
-                              e.target.value
-                            )
-                          }
-                          style={styles.select}
-                        >
-                          <option value="Select lead user">
-                            Select lead User
-                          </option>
-                          {users.map((user, userIndex) => (
-                            <option key={userIndex} value={user.name}>
-                              {user.name}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+  <thead>
+    <tr style={styles.tableHeaderRow}>
+      <th style={styles.tableHeader}>Sl.No</th>
+      <th style={styles.tableHeader}>
+        Date <FaFilter style={styles.icon} onClick={() => handleFilterClick("date")} />
+      </th>
+      <th style={styles.tableHeader}>
+        Name <FaFilter style={styles.icon} onClick={() => handleFilterClick("name")} />
+      </th>
+      <th style={styles.tableHeader}>
+        District <FaFilter style={styles.icon} onClick={() => handleFilterClick("district")} />
+      </th>
+      <th style={styles.tableHeader}>
+        Mobile Number <FaFilter style={styles.icon} onClick={() => handleFilterClick("mobileNumber")} />
+      </th>
+      <th style={styles.tableHeader}>
+        Service <FaFilter style={styles.icon} onClick={() => handleFilterClick("service")} />
+      </th>
+      <th style={styles.tableHeader}>Paid Amount <FaFilter style={styles.icon} /></th>
+      <th style={styles.tableHeader}>Status <FaFilter style={styles.icon} /></th>
+      {adminData?.role === "admin" && <th style={styles.tableHeader}>Assign</th>}
+    </tr>
+  </thead>
+  <tbody>
+    {currentLeads.map((lead, index) => (
+      <tr key={index} style={styles.tableRow}>
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+          {index + 1 + (currentPage - 1) * leadsPerPage}
+        </td>
+        <td style={{ ...styles.tableCell, whiteSpace: "nowrap" }} onClick={() => handleRowClick(lead)}>
+          {lead.date}
+        </td>
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+          {lead.name}
+        </td>
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+          {lead.district}
+        </td>
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+          {lead.mobilenumber}
+        </td>
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+          {lead.service}
+        </td>
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+          {lead.paidAmount || "0"}
+        </td>
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+          <button
+            style={{
+              ...styles.statusButton,
+              backgroundColor: lead.paymentStatus.trim().toLowerCase() === "paid" ? "#4CAF50" : "#ff9800",
+            }}
+            disabled={lead.paymentStatus.trim().toLowerCase() === "paid"}
+          >
+            {lead.paymentStatus ? lead.paymentStatus : "unpaid"}
+          </button>
+        </td>
+        {adminData?.role === "admin" && (
+          <td>
+            <select
+              value={lead.assign}
+              onChange={(e) => handleAssignChange(indexOfFirstLead + index, e.target.value)}
+              style={styles.select}
+            >
+              <option value="Select lead user">Select lead User</option>
+              {users.map((user, userIndex) => (
+                <option key={userIndex} value={user.name}>
+                  {user.name}
+                </option>
+              ))}
+            </select>
+          </td>
+        )}
+      </tr>
+    ))}
+  </tbody>
+</table>
 
             <div
               className="pagination"
@@ -1932,174 +1866,79 @@ function NewLeads({ selectedItem }) {
               // backgroundColor: "#fff",
             }}
           >
-            <table
-              className="mobile-leads-table"
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                textAlign: "center",
-              }}
+          <table
+  className="mobile-leads-table"
+  style={{ width: "100%", borderCollapse: "collapse", textAlign: "center" }}
+>
+  <thead>
+    <tr style={{ backgroundColor: "#f5f5f5", borderBottom: "2px solid black" }}>
+      <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>Sl.No</th>
+      <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
+        Date <FaFilter style={styles.icon} onClick={() => handleFilterClick("date")} />
+      </th>
+      <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
+        Name <FaFilter style={styles.icon} onClick={() => handleFilterClick("name")} />
+      </th>
+      <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
+        Service <FaFilter style={styles.icon} onClick={() => handleFilterClick("service")} />
+      </th>
+      <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
+        Status <FaFilter style={styles.icon} onClick={() => handleFilterClick("status")} />
+      </th>
+      {adminData?.role === "admin" && (
+        <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>Assign</th>
+      )}
+    </tr>
+  </thead>
+  <tbody>
+    {currentLeads.map((lead, index) => (
+      <tr key={index} style={{ borderBottom: "1px solid #ddd" }}>
+        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
+          {index + 1 + (currentPage - 1) * leadsPerPage}
+        </td>
+        <td style={{ padding: "10px", whiteSpace: "nowrap", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
+          {lead.date}
+        </td>
+        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
+          {lead.name}
+        </td>
+        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
+          {lead.service}
+        </td>
+        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
+          <button
+            style={{
+              padding: "1px 6px",
+              border: "none",
+              borderRadius: "5px",
+              backgroundColor: lead.paymentStatus.trim().toLowerCase() === "paid" ? "#4CAF50" : "#ff9800",
+              color: "white",
+            }}
+            disabled={lead.paymentStatus.trim().toLowerCase() === "paid"}
+          >
+            {lead.paymentStatus ? lead.paymentStatus : "unpaid"}
+          </button>
+        </td>
+        {adminData?.role === "admin" && (
+          <td style={{ padding: "10px" }}>
+            <select
+              value={lead.assign}
+              onChange={(e) => handleAssignChange(indexOfFirstLead + index, e.target.value)}
+              style={styles.select}
             >
-              <thead>
-                <tr
-                  style={{
-                    backgroundColor: "#f5f5f5",
-                    borderBottom: "2px solid black",
-                  }}
-                >
-                  <th
-                    style={{
-                      padding: "10px",
-                      textAlign: "left",
-                      borderRight: "1px solid #ddd",
-                    }}
-                  >
-                    Sl.No{" "}
-                  </th>
-                  <th
-                    style={{
-                      padding: "10px",
-                      textAlign: "left",
-                      borderRight: "1px solid #ddd",
-                    }}
-                  >
-                    Date{" "}
-                    <FaFilter
-                      style={styles.icon}
-                      onClick={() => handleFilterClick("date")}
-                    />{" "}
-                  </th>
-                  <th
-                    style={{
-                      padding: "10px",
-                      textAlign: "left",
-                      borderRight: "1px solid #ddd",
-                    }}
-                  >
-                    Name{" "}
-                    <FaFilter
-                      style={styles.icon}
-                      onClick={() => handleFilterClick("name")}
-                    />
-                  </th>
-                  <th
-                    style={{
-                      padding: "10px",
-                      textAlign: "left",
-                      borderRight: "1px solid #ddd",
-                    }}
-                  >
-                    Service{" "}
-                    <FaFilter
-                      style={styles.icon}
-                      onClick={() => handleFilterClick("service")}
-                    />
-                  </th>
-                  <th
-                    style={{
-                      padding: "10px",
-                      textAlign: "left",
-                      borderRight: "1px solid #ddd",
-                    }}
-                  >
-                    Status
-                    <FaFilter
-                      style={styles.icon}
-                      onClick={() => handleFilterClick("status")}
-                    />
-                  </th>
-                  <th
-                    style={{
-                      padding: "10px",
-                      textAlign: "left",
-                      borderRight: "1px solid #ddd",
-                    }}
-                  >
-                    Assign{" "}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentLeads.map((lead, index) => (
-                  <tr key={index} style={{ borderBottom: "1px solid #ddd" }}>
-                    <td
-                      style={{ padding: "10px", borderRight: "1px solid #ddd" }}
-                      onClick={() => setSelectedLead(lead)}
-                    >
-                      {index + 1 + (currentPage - 1) * leadsPerPage}
-                    </td>
-                    <td
-                      style={{
-                        padding: "10px",
-                        whiteSpace: "nowrap",
-                        borderRight: "1px solid #ddd",
-                      }}
-                      onClick={() => setSelectedLead(lead)}
-                    >
-                      {lead.date}
-                    </td>
-                    <td
-                      style={{ padding: "10px", borderRight: "1px solid #ddd" }}
-                      onClick={() => setSelectedLead(lead)}
-                    >
-                      {lead.name}
-                    </td>
-                    <td
-                      style={{ padding: "10px", borderRight: "1px solid #ddd" }}
-                      onClick={() => setSelectedLead(lead)}
-                    >
-                      {lead.service}
-                    </td>
-                    <td
-                      style={{ padding: "10px", borderRight: "1px solid #ddd" }}
-                      onClick={() => setSelectedLead(lead)}
-                    >
-                      <button
-                        style={{
-                          padding: "1px 6px",
-                          border: "none",
-                          borderRadius: "5px",
-                          backgroundColor:
-                            lead.paymentStatus.trim().toLowerCase() === "paid"
-                              ? "#4CAF50"
-                              : "#ff9800",
-                          color: "white",
-                        }}
-                        disabled={
-                          lead.paymentStatus.trim().toLowerCase() === "paid"
-                        }
-                      >
-                        {lead.paymentStatus ? lead.paymentStatus : "unpaid"}
-                      </button>
-                    </td>
-                    <td style={{ padding: "10px" }}>
-                      {adminData?.role === "admin" ? (
-                        <select
-                          value={lead.assign}
-                          onChange={(e) =>
-                            handleAssignChange(
-                              indexOfFirstLead + index,
-                              e.target.value
-                            )
-                          }
-                          style={styles.select}
-                        >
-                          <option value="Select lead user">
-                            Select lead User
-                          </option>
-                          {users.map((user, userIndex) => (
-                            <option key={userIndex} value={user.name}>
-                              {user.name}
-                            </option>
-                          ))}
-                        </select>
-                      ) : null}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              {/* <br/> */}
-            </table>
+              <option value="Select lead user">Select lead User</option>
+              {users.map((user, userIndex) => (
+                <option key={userIndex} value={user.name}>
+                  {user.name}
+                </option>
+              ))}
+            </select>
+          </td>
+        )}
+      </tr>
+    ))}
+  </tbody>
+</table>
             <div
               className="pagination"
               style={{ marginTop: "20px", textAlign: "center" }}
@@ -2800,7 +2639,7 @@ function NewLeads({ selectedItem }) {
                 {
                   label: "In Process",
                   color: "#FFC107",
-                  action: () => updateStatus(selectedLead._id, "In Process"),
+                  action: () => updateStatus(selectedLead._id, "In Progress"),
                 },
                 {
                   label: "Converted",
