@@ -1,0 +1,17 @@
+
+.form-container {
+    margin-left: 250px; /* Adjust based on sidebar width */
+    padding-top: 80px; /* Adjust based on header height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+  }
+  
+  @media (max-width: 768px) {
+    .form-container {
+        margin-left: 0;
+        padding-top: 20px;
+    }
+  }
+  
