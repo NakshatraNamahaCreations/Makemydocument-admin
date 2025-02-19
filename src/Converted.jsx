@@ -42,7 +42,7 @@ function Converted({selectedItem}) {
     const handleFilterClick = (column) => {
       setFilters((prevFilters) => {
         const newFilters = { ...prevFilters };
-  
+    
         switch (column) {
           case "date":
             newFilters.date =
@@ -56,64 +56,78 @@ function Converted({selectedItem}) {
           case "district":
           case "service":
           case "mobileNumber":
+          case "status": // ✅ Add status filter toggle
             newFilters[column] = newFilters[column] === "asc" ? "desc" : "asc";
             break;
           default:
             break;
         }
-  
+    
         return newFilters;
       });
     };
+    
   
     const applyFilters = (leads) => {
       let filteredLeads = [...leads];
-  
+    
       // Apply date filter (today or yesterday)
       if (filters.date) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-  
+    
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         yesterday.setHours(0, 0, 0, 0);
-  
+    
         filteredLeads = filteredLeads.filter((lead) => {
           const leadDate = new Date(lead.date);
           leadDate.setHours(0, 0, 0, 0);
-  
-          if (filters.date === "today") return leadDate.getTime() === today.getTime();
-          if (filters.date === "yesterday") return leadDate.getTime() === yesterday.getTime();
-  
+    
+          if (filters.date === "today")
+            return leadDate.getTime() === today.getTime();
+          if (filters.date === "yesterday")
+            return leadDate.getTime() === yesterday.getTime();
+    
           return true;
         });
       }
-  
+    
       // Sorting function
       const sortLeads = (key, order) => {
         if (!order) return;
-  
+    
         filteredLeads.sort((a, b) => {
           let valueA = a[key] ? a[key].toString().toLowerCase() : "";
           let valueB = b[key] ? b[key].toString().toLowerCase() : "";
-  
+    
           if (key === "mobileNumber") {
             valueA = parseInt(a.mobilenumber.replace(/\D/g, ""), 10) || 0;
             valueB = parseInt(b.mobilenumber.replace(/\D/g, ""), 10) || 0;
           }
-  
+    
           if (valueA < valueB) return order === "asc" ? -1 : 1;
           if (valueA > valueB) return order === "asc" ? 1 : -1;
           return 0;
         });
       };
-  
+    
       // Apply sorting filters
       sortLeads("name", filters.name);
       sortLeads("district", filters.district);
       sortLeads("service", filters.service);
       sortLeads("mobileNumber", filters.mobileNumber);
-  
+    
+      // ✅ Status Sorting - "Paid" first
+      if (filters.status) {
+        filteredLeads.sort((a, b) => {
+          const statusA = a.paymentStatus?.trim().toLowerCase() === "paid" ? 1 : 0;
+          const statusB = b.paymentStatus?.trim().toLowerCase() === "paid" ? 1 : 0;
+    
+          return filters.status === "asc" ? statusB - statusA : statusA - statusB;
+        });
+      }
+    
       return filteredLeads;
     };
   
@@ -298,7 +312,7 @@ function Converted({selectedItem}) {
           .delete( `${process.env.REACT_APP_API_URL}/api/lead/deleteLead/${selectedLead._id}`)
           .then((response) => {
             if (response.data.status === "success") {
-              alert("Lead deleted successfully!");
+              // alert("Lead deleted successfully!");
               window.location.reload(); // Reload the page after success
             } else {
               alert(`Error: ${response.data.message}`);
@@ -461,7 +475,7 @@ function Converted({selectedItem}) {
   
       if (response.status === 200) {
         console.log("Follow-up time saved successfully!", response.data);
-        alert("Follow-up time and status updated successfully!");
+        // alert("Follow-up time and status updated successfully!");
         setShowPopup(false); 
         window.location.reload();
       } else {
@@ -551,7 +565,7 @@ function Converted({selectedItem}) {
         Paid Amount <FaFilter style={styles.icon} />
       </th>
       <th style={styles.tableHeader}>
-        Status <FaFilter style={styles.icon} />
+        Status <FaFilter style={styles.icon} onClick={() => handleFilterClick("status")} />
       </th>
       {adminData?.role === "admin" && <th style={styles.tableHeader}>Assign</th>}
     </tr>
@@ -1597,14 +1611,7 @@ function Converted({selectedItem}) {
                                      <div style={styles.actions}>
                                        {!showCommentInput && !showPopup && (
                                          <>
-                                          
-                                          
-                           
                                            
-                                          
-                                           <button style={styles.comment} onClick={handleShow}>
-                                             Add Comment
-                                           </button>
                                            <a href={`tel:${selectedLead?.mobilenumber}`} style={{ textDecoration: "none" }}>
   <button
     style={{
@@ -1636,6 +1643,16 @@ function Converted({selectedItem}) {
     <FaWhatsapp />
   </button>
 </a>
+                                          
+                                        
+
+
+                                           
+                                          
+                                           <button style={styles.comment} onClick={handleShow}>
+                                             Add Comment
+                                           </button>
+         
 
                                            {adminData?.role === "admin" && ( // Check if the role is admin
   <button
@@ -2408,6 +2425,39 @@ function Converted({selectedItem}) {
             boxShadow: "0 -2px 5px rgba(0, 0, 0, 0.1)",
           }}
         >
+                    <a href={`tel:${selectedLead?.mobilenumber}`} style={{ textDecoration: "none" }}>
+  <button
+    style={{
+      backgroundColor: "transparent",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "1.5rem",
+    }}
+  >
+    📞
+  </button>
+</a>
+          <a
+  href={`https://wa.me/${selectedLead?.mobilenumber}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  style={{ textDecoration: "none", marginLeft: "10px" }}
+>
+  <button
+    style={{
+      backgroundColor: "transparent",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "1.5rem",
+      color: "green", // WhatsApp color
+    }}
+  >
+    <FaWhatsapp />
+  </button>
+</a>
+
+
+
           {[
             { label: "Add Comment", color: "#007BFF", action: handleShow },
             // { label: "Follow Up", color: "#28A745", action: () => setShowPopup(true) },
@@ -2436,37 +2486,7 @@ function Converted({selectedItem}) {
             </button>
           ))}
 
-<a href={`tel:${selectedLead?.mobilenumber}`} style={{ textDecoration: "none" }}>
-  <button
-    style={{
-      backgroundColor: "transparent",
-      border: "none",
-      cursor: "pointer",
-      fontSize: "1.5rem",
-    }}
-  >
-    📞
-  </button>
-</a>
 
-<a
-  href={`https://wa.me/${selectedLead?.mobilenumber}`}
-  target="_blank"
-  rel="noopener noreferrer"
-  style={{ textDecoration: "none", marginLeft: "10px" }}
->
-  <button
-    style={{
-      backgroundColor: "transparent",
-      border: "none",
-      cursor: "pointer",
-      fontSize: "1.5rem",
-      color: "green", // WhatsApp color
-    }}
-  >
-    <FaWhatsapp />
-  </button>
-</a>
         
           {/* Delete Button for Admin */}
           {adminData?.role === "admin" && (
@@ -2754,8 +2774,8 @@ const styles = {
     borderRadius: "5px",
     border: "1px solid #ddd",
     fontSize: "14px",
-    width: "125%",
-    marginLeft: "-14%",
+    width: "100%",
+    // marginLeft: "-14%",
     backgroundColor: "#fff",
   },
   assignmentMessage: {

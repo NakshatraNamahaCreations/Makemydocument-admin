@@ -360,7 +360,7 @@ const handleDeleteClick = (id) => {
     </div>
     <div
       className="new-leads-container"
-      style={{ width: "380%", marginLeft: "227px" }}
+      style={{ width: "380%", marginLeft: "320px" }}
     >
       <table className="leads-table" style={{ width: "100%" }}>
         <thead>

@@ -191,7 +191,7 @@ console.log(response.data.user);
 
   return (
     <>
-    <div className="new-leads-container d-none d-lg-block" style={{ width: "380%", marginLeft: "227px", marginTop: "106px" }}>
+    <div className="new-leads-container d-none d-lg-block" style={{ width: "380%", marginLeft: "270px", marginTop: "106px" }}>
       <div style={styles.profileContainer}>
         <h2>My Profile</h2>
         <form style={styles.profileForm}>
@@ -405,7 +405,7 @@ const styles = {
     fontFamily: "'Poppins', sans-serif",
     backgroundColor: "#fff",
     borderRadius: "8px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    // boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
   },
   profileForm: {
     display: "flex",

@@ -1566,6 +1566,39 @@ const formatTime = (timeString) => {
           <div style={styles.actions}>
             {!showCommentInput && !showPopup && (
               <>
+                            <a href={`tel:${selectedLead?.mobilenumber}`} style={{ textDecoration: "none" }}>
+  <button
+    style={{
+      backgroundColor: "transparent",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "1.5rem",
+    }}
+  >
+    📞
+  </button>
+</a>
+              <a
+  href={`https://wa.me/${selectedLead?.mobilenumber}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  style={{ textDecoration: "none", marginLeft: "10px" }}
+>
+  <button
+    style={{
+      backgroundColor: "transparent",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "1.5rem",
+      color: "green", // WhatsApp color
+    }}
+  >
+    <FaWhatsapp />
+  </button>
+</a>
+
+
+
                    <button style={styles.comment} onClick={handleShow}>
                   Add Comment
                 </button>
@@ -1622,37 +1655,7 @@ const formatTime = (timeString) => {
                
               
              
-                <a href={`tel:${selectedLead?.mobilenumber}`} style={{ textDecoration: "none" }}>
-  <button
-    style={{
-      backgroundColor: "transparent",
-      border: "none",
-      cursor: "pointer",
-      fontSize: "1.5rem",
-    }}
-  >
-    📞
-  </button>
-</a>
-
-<a
-  href={`https://wa.me/${selectedLead?.mobilenumber}`}
-  target="_blank"
-  rel="noopener noreferrer"
-  style={{ textDecoration: "none", marginLeft: "10px" }}
->
-  <button
-    style={{
-      backgroundColor: "transparent",
-      border: "none",
-      cursor: "pointer",
-      fontSize: "1.5rem",
-      color: "green", // WhatsApp color
-    }}
-  >
-    <FaWhatsapp />
-  </button>
-</a>
+                
 
                 {adminData?.role === "admin" && ( // Check if the role is admin
   <button
@@ -2440,6 +2443,39 @@ const formatTime = (timeString) => {
         boxShadow: "0 -2px 5px rgba(0, 0, 0, 0.1)",
       }}
     >
+              <a href={`tel:${selectedLead?.mobilenumber}`} style={{ textDecoration: "none" }}>
+      <button
+        style={{
+          backgroundColor: "transparent",
+          border: "none",
+          cursor: "pointer",
+          fontSize: "1.5rem",
+        }}
+      >
+        📞
+      </button>
+    </a>
+       <a
+  href={`https://wa.me/${selectedLead?.mobilenumber}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  style={{ textDecoration: "none", marginLeft: "10px" }}
+>
+  <button
+    style={{
+      backgroundColor: "transparent",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "1.5rem",
+      color: "green", // WhatsApp color
+    }}
+  >
+    <FaWhatsapp />
+  </button>
+</a>
+
+
+   
       {[
         { label: "Add Comment", color: "#007BFF", action: handleShow },
         { label: "Follow Up", color: "#28A745", action: () => setShowPopup(true) },
@@ -2468,37 +2504,7 @@ const formatTime = (timeString) => {
         </button>
       ))}
     
-    <a href={`tel:${selectedLead?.mobilenumber}`} style={{ textDecoration: "none" }}>
-      <button
-        style={{
-          backgroundColor: "transparent",
-          border: "none",
-          cursor: "pointer",
-          fontSize: "1.5rem",
-        }}
-      >
-        📞
-      </button>
-    </a>
-
-    <a
-  href={`https://wa.me/${selectedLead?.mobilenumber}`}
-  target="_blank"
-  rel="noopener noreferrer"
-  style={{ textDecoration: "none", marginLeft: "10px" }}
->
-  <button
-    style={{
-      backgroundColor: "transparent",
-      border: "none",
-      cursor: "pointer",
-      fontSize: "1.5rem",
-      color: "green", // WhatsApp color
-    }}
-  >
-    <FaWhatsapp />
-  </button>
-</a>
+  
     
     
       {/* Delete Button for Admin */}
@@ -2856,8 +2862,8 @@ const styles = {
     borderRadius: "5px",
     border: "1px solid #ddd",
     fontSize: "14px",
-    width: "125%",
-    marginLeft: "-14%",
+    width: "100%",
+    // marginLeft: "-14%",
     backgroundColor: "#fff",
   },
   assignmentMessage: {

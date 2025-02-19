@@ -36,7 +36,7 @@ function LoginPage() {
         let requestData;
 
         if (isForgotPassword) {
-            url = `${process.env.REACT_APP_API_URL}/forget.php`;
+            url = `${process.env.REACT_APP_API_URL}/auth/forgot-password`;
             requestData = { email: formData.email };
         } else {
             url = `${process.env.REACT_APP_API_URL}/api/auth/login`;
