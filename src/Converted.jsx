@@ -331,10 +331,10 @@ function Converted({selectedItem}) {
 
   useEffect(() => {
     // Check if a comment has been fetched already and if selectedLead exists
-    if (selectedLead?.id && !submittedComment?.comment) {
-      fetchCommentData(selectedLead.id);
+    if (selectedLead?._id && !submittedComment?.comment) {
+      fetchCommentData(selectedLead._id);
     }
-  }, [selectedLead?.id, submittedComment?.comment]);
+  }, [selectedLead?._id, submittedComment?.comment]);
   
   const fetchCommentData = async (leadId) => {
     try {

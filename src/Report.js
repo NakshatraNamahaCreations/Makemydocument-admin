@@ -266,10 +266,10 @@ const formatTime = (timeString) => {
   const [selectedLead, setSelectedLead] = useState(null);
   
   useEffect(() => {
-    if (selectedLead?.id && !submittedComment?.comment) {
-      fetchCommentData(selectedLead.id);
+    if (selectedLead?._id && !submittedComment?.comment) {
+      fetchCommentData(selectedLead._id);
     }
-  }, [selectedLead?.id, submittedComment?.comment]);
+  }, [selectedLead?._id, submittedComment?.comment]);
 
   const fetchCommentData = async (leadId) => {
     try {

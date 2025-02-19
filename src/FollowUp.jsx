@@ -205,10 +205,10 @@ function FollowUp({ selectedItem }) {
   };
   useEffect(() => {
     // Check if a comment has been fetched already and if selectedLead exists
-    if (selectedLead?.id && !submittedComment?.comment) {
-      fetchCommentData(selectedLead.id);
+    if (selectedLead?._id && !submittedComment?.comment) {
+      fetchCommentData(selectedLead._id);
     }
-  }, [selectedLead?.id, submittedComment?.comment]);
+  }, [selectedLead?._id, submittedComment?.comment]);
 
   const fetchCommentData = async (leadId) => {
     try {
@@ -1651,32 +1651,38 @@ function FollowUp({ selectedItem }) {
                     Follow Up
                   </button>
                   <button
-                    onClick={() =>
-                        updateStatus(selectedLead._id, "In Progress")
-                      }
-               
-                    style={styles.inProcess}
-                  >
-                    In Process
-                  </button>
-                  <button
-                    onClick={() => 
-                        updateStatus(selectedLead._id, "converted")
-                      }
-                 
-                    style={styles.converted}
-                  >
-                    Converted
-                  </button>
-                  <button
-                    onClick={() => 
-                        updateStatus(selectedLead._id, "dead")
-                      }
-                   
-                    style={styles.dead}
-                  >
-                    Dead
-                  </button>
+  onClick={() => {
+    if (window.confirm("Are you sure you want to change status to In Progress?")) {
+      updateStatus(selectedLead._id, "In Progress");
+    }
+  }}
+  style={styles.inProcess}
+>
+  In Process
+</button>
+
+<button
+  onClick={() => {
+    if (window.confirm("Are you sure you want to change status to Converted?")) {
+      updateStatus(selectedLead._id, "converted");
+    }
+  }}
+  style={styles.converted}
+>
+  Converted
+</button>
+
+<button
+  onClick={() => {
+    if (window.confirm("Are you sure you want to change status to Dead?")) {
+      updateStatus(selectedLead._id, "dead");
+    }
+  }}
+  style={styles.dead}
+>
+  Dead
+</button>
+
 
 
                   {adminData?.role === "admin" && ( // Check if the role is admin
