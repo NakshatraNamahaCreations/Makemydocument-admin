@@ -56,6 +56,7 @@ function LoginPage() {
         if (result.success) {
             if (!isForgotPassword) {
                 sessionStorage.setItem("admin", JSON.stringify(user));
+                sessionStorage.setItem("isLoggedIn", "true");
                 setTimeout(() => {
                     navigate("/home"); 
                 }, 100); 

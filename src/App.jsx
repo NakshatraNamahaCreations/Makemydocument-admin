@@ -31,6 +31,16 @@ function App() {
     setOpenSidebarToggle(!openSidebarToggle);
   };
 
+  const ProtectedRoute = ({ element }) => {
+    const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+    const user = JSON.parse(sessionStorage.getItem("admin") || "{}");
+
+    if (!isLoggedIn || !user.name) {
+        sessionStorage.clear();
+        return <Navigate to="/" replace />;
+    }
+    return element;
+  };
  
   const Layout = ({ children }) => {
     const location = useLocation();
@@ -73,18 +83,18 @@ function App() {
             <Route path="/" element={<LoginPage />} />
 
             {/* Protected routes */}
-            <Route path="/home" element={<Home />} />
-            <Route path="/add-leads" element={<AddLeads />} />
-            <Route path="/new-leads" element={<NewLeads  selectedItem={selectedItem}/>} />
-            <Route path="/over-due" element={<OverDue selectedItem={selectedItem} />} />
-            <Route path="/today-follow-up" element={<TodayFollowUp selectedItem={selectedItem}/>} />
-            <Route path="/follow-up" element={<FollowUp selectedItem={selectedItem}/>} />
-            <Route path="/in-process" element={<InProcess selectedItem={selectedItem}/>} />
-            <Route path="/converted" element={<Converted selectedItem={selectedItem}/>} />
-            <Route path="/dead" element={<Dead selectedItem={selectedItem}/>} />
-            <Route path="/report" element={<Report />} />
-            <Route path="/setting" element={<Setting />} />
-            <Route path="/paytms" element={<PaytmPayment />} />
+            <Route path="/home" element={<ProtectedRoute element={<Home />} />} />
+            <Route path="/add-leads" element={<ProtectedRoute element={<AddLeads />} />} />
+            <Route path="/new-leads" element={<ProtectedRoute element={<NewLeads selectedItem={selectedItem} />} />} />
+            <Route path="/over-due" element={<ProtectedRoute element={<OverDue selectedItem={selectedItem} />} />} />
+            <Route path="/today-follow-up" element={<ProtectedRoute element={<TodayFollowUp selectedItem={selectedItem} />} />} />
+            <Route path="/follow-up" element={<ProtectedRoute element={<FollowUp selectedItem={selectedItem} />} />} />
+            <Route path="/in-process" element={<ProtectedRoute element={<InProcess selectedItem={selectedItem} />} />} />
+            <Route path="/converted" element={<ProtectedRoute element={<Converted selectedItem={selectedItem} />} />} />
+            <Route path="/dead" element={<ProtectedRoute element={<Dead selectedItem={selectedItem} />} />} />
+            <Route path="/report" element={<ProtectedRoute element={<Report />} />} />
+            <Route path="/setting" element={<ProtectedRoute element={<Setting />} />} />
+            <Route path="/paytms" element={<ProtectedRoute element={<PaytmPayment />} />} />
 
             <Route
             
@@ -92,6 +102,8 @@ function App() {
               element={<MyProfilePage profileImage={profileImage} setProfileImage={setProfileImage} />}
             />
           </Routes>
+          <Route path="*" element={<Navigate to="/" replace />} />
+
         </Layout>
       </Router>
     </SearchProvider>

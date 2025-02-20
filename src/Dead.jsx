@@ -284,12 +284,8 @@ function Dead({ selectedItem }) {
         axios
           .delete(`${process.env.REACT_APP_API_URL}/api/lead/deleteLead/${selectedLead._id}`)
           .then((response) => {
-            if (response.data.status === "success") {
-              // alert("Lead deleted successfully!");
-              window.location.reload(); // Reload the page after success
-            } else {
-              alert(`Error: ${response.data.message}`);
-            }
+            alert("Lead deleted successfully!");
+            window.location.reload(); 
           })
           .catch((error) => {
             console.error("Error:", error);
