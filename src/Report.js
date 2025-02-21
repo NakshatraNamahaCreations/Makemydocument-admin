@@ -168,39 +168,39 @@ const formatTime = (timeString) => {
        });
    }, []);
 
-   const handleAssignChange = (index, value) => {
-    const updatedLeads = [...leads];
-    updatedLeads[index].assign = value;
-    setLeads(updatedLeads);
-    sessionStorage.setItem("leads", JSON.stringify(updatedLeads));
-    console.log(updatedLeads);
-
-    const leadId = updatedLeads[index]?._id;
-
-    // if (!leadId) {
-    //   console.error("Invalid data: leadId or value is missing");
-    //   return;
-    // }
-
-    axios
-      .put(
+   const handleAssignChange = async (leadId, value) => {
+    if (!leadId) {
+      console.error("Invalid data: leadId is missing");
+      return;
+    }
+  
+    // Update the leads array locally
+    setLeads((prevLeads) =>
+      prevLeads.map((lead) =>
+        lead._id === leadId ? { ...lead, assign: value } : lead
+      )
+    );
+  
+    try {
+      const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/api/lead/updateAssign`,
         {
           id: leadId,
-          assign: value,
+          assign: value || "Unassigned",
         }
-      )
-      .then((response) => {
-        const data = response.data;
-        if (data.status === "success") {
-          console.log("Assignment updated successfully");
-        } else {
-          console.error("Failed to update assignment:", data.message);
-        }
-      })
-      .catch((error) => {
-        console.error("Error during the API call:", error.message);
-      });
+      );
+  
+      const data = response.data;
+      console.log("API Response:", data);
+  
+      if (data.status === "success") {
+        console.log("Assignment updated successfully");
+      } else {
+        console.error("Failed to update assignment:", data.message);
+      }
+    } catch (error) {
+      console.error("Error during the API call:", error.message);
+    }
   };
 
   const handleRowClick = (lead) => {
@@ -562,7 +562,7 @@ const formatTime = (timeString) => {
   {adminData?.role === "admin" ? (
         <select
           value={lead.assign || "Select lead user"}
-          onChange={(e) => handleAssignChange(indexOfFirstLead + index, e.target.value)}
+          onChange={(e) => handleAssignChange(lead._id, e.target.value)}
           style={styles.select}
         >
           <option value="Select lead user">Select lead user</option>
@@ -1868,7 +1868,7 @@ const formatTime = (timeString) => {
             <td style={{ padding: "10px" }}>
               <select
                 value={lead.assign || "Select lead user"}
-                onChange={(e) => handleAssignChange(index, e.target.value)}
+                onChange={(e) => handleAssignChange(lead._id, e.target.value)}
                 style={styles.select}
               >
                 <option value="Select lead user">Select lead user</option>
@@ -2479,9 +2479,33 @@ const formatTime = (timeString) => {
       {[
         { label: "Add Comment", color: "#007BFF", action: handleShow },
         { label: "Follow Up", color: "#28A745", action: () => setShowPopup(true) },
-        { label: "In Process", color: "#FFC107", action: () => updateStatus(selectedLead._id, "In Progress") },
-        { label: "Converted", color: "#17A2B8", action: () => updateStatus(selectedLead._id, "Converted") },
-        { label: "Dead", color: "#DC3545", action: () => updateStatus(selectedLead._id, "Dead") },
+        {
+          label: "In Process",
+          color: "#FFC107",
+          action: () => {
+            if (window.confirm("Are you sure you want to change status to In Progress?")) {
+              updateStatus(selectedLead._id, "In Progress");
+            }
+          },
+        },
+        {
+          label: "Converted",
+          color: "#17A2B8",
+          action: () => {
+            if (window.confirm("Are you sure you want to change status to Converted?")) {
+              updateStatus(selectedLead._id, "Converted");
+            }
+          },
+        },
+        {
+          label: "Dead",
+          color: "#DC3545",
+          action: () => {
+            if (window.confirm("Are you sure you want to change status to Dead?")) {
+              updateStatus(selectedLead._id, "Dead");
+            }
+          },
+        },
       ].map((button, index) => (
         <button
           key={index}

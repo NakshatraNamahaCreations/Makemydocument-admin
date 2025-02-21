@@ -99,37 +99,39 @@ function TodayFollowUp({selectedItem}) {
     setSelectedLead(null);
   };
 
-  const handleAssignChange = (index, value) => {
-    const updatedLeads = [...leads];
-    updatedLeads[index].assign = value;
-    setLeads(updatedLeads);
-    sessionStorage.setItem("leads", JSON.stringify(updatedLeads));
-
-    const leadId = updatedLeads[index]?._id;
-
+  const handleAssignChange = async (leadId, value) => {
     if (!leadId) {
-      console.error("Invalid data: leadId or value is missing");
+      console.error("Invalid data: leadId is missing");
       return;
     }
-
-    axios.put(
-      `${process.env.REACT_APP_API_URL}/api/lead/updateAssign`,
-       {
-         id: leadId,
-         assign: value || "Unassigned", 
-       }
-     )
-      .then((response) => {
-        const data = response.data;
-        if (data.status === "success") {
-          console.log("Assignment updated successfully");
-        } else {
-          console.error("Failed to update assignment:", data.message);
+  
+    // Update the leads array locally
+    setLeads((prevLeads) =>
+      prevLeads.map((lead) =>
+        lead._id === leadId ? { ...lead, assign: value } : lead
+      )
+    );
+  
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/lead/updateAssign`,
+        {
+          id: leadId,
+          assign: value || "Unassigned",
         }
-      })
-      .catch((error) => {
-        console.error("Error during the API call:", error.message);
-      });
+      );
+  
+      const data = response.data;
+      console.log("API Response:", data);
+  
+      if (data.status === "success") {
+        console.log("Assignment updated successfully");
+      } else {
+        console.error("Failed to update assignment:", data.message);
+      }
+    } catch (error) {
+      console.error("Error during the API call:", error.message);
+    }
   };
   const handleRowClick = (lead) => {
     setSelectedLead({
@@ -438,7 +440,14 @@ function TodayFollowUp({selectedItem}) {
     setSelectedDate(e.target.value); // Update the selected date
   };
 
-
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${day}-${month}-${year}`; // Return in YYYY-MM-DD format
+  };
    
   
     const filteredByAppliedFilters = applyFilters(currentLeads);
@@ -605,7 +614,7 @@ function TodayFollowUp({selectedItem}) {
           <td>
             <select
               value={lead.assign || "Select lead user"}
-              onChange={(e) => handleAssignChange(index, e.target.value)}
+              onChange={(e) => handleAssignChange(lead._id, e.target.value)}
               style={styles.select}
             >
               <option value="Select lead user">Select lead user</option>
@@ -648,964 +657,971 @@ function TodayFollowUp({selectedItem}) {
         <div style={styles.details}>
                       <h2 style={styles.title}>Lead Details</h2>
                       <div style={styles.row}>
-                        <div style={styles.col}>
-                          <strong>Date:</strong>
-                          <input
-                            type="text"
-                            value={selectedLead?.date}
-                            style={styles.input}
-                          />
-                        </div>
-                        <div style={styles.col}>
-                          <strong>Time:</strong>
-                          <input
-                            type="text"
-                            value= {selectedLead?.time}
-                            style={styles.input}
-                          />
-                        </div>
-                        <div style={styles.col}>
-                          <strong>Order Id:</strong>
-                          <input
-                            type="text"
-                            value={selectedLead?.orderId}
-                            style={{ ...styles.input, textTransform: "uppercase" }} 
-                          />
-                        </div>
-                      </div>
-            
-                      <div style={styles.row}>
-                        <div style={styles.col}>
-                          <strong>Name:</strong>
-                          <input
-                            type="text"
-                            value={selectedLead.name}
-                            style={{ ...styles.input, textTransform: "uppercase" }} 
-                          />
-                        </div>
-                        <div style={styles.col}>
-                          <strong>Service:</strong>
-                          <input
-                            type="text"
-                            value={selectedLead.service}
-                            style={{ ...styles.input, textTransform: "uppercase" }} 
-                          />
-                        </div>
-                        {selectedLead?.source && (
-  <div style={styles.col}>
-    <strong>Source:</strong>
-    <input
-      type="text"
-      value={selectedLead.source}
-      style={{ ...styles.input, textTransform: "uppercase" }} 
-    />
-  </div>
-)}
+              <div style={styles.col}>
+                <strong>Date:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.date}
+                  style={styles.input}
+                />
+              </div>
+              <div style={styles.col}>
+                <strong>Time:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.time}
+                  style={styles.input}
+                />
+              </div>
+              <div style={styles.col}>
+                <strong>Order Id:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.orderId}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+            </div>
 
-{(selectedLead?.service !== "MSME" && 
-  selectedLead?.service !== "SeniorCitizen" && 
-  selectedLead?.service !== "Food License(FSSAI)" && 
-  selectedLead?.applying_for) && (
-  <div style={styles.col}>
-    <strong>Applying For:</strong>
-    <input
-      type="text"
-      value={selectedLead.applying_for.toUpperCase()}
-      style={{ ...styles.input, textTransform: "uppercase" }} 
-    />
-  </div>
-)}
+            <div style={styles.row}>
+              <div style={styles.col}>
+                <strong>Name:</strong>
+                <input
+                  type="text"
+                  value={selectedLead.name}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+              <div style={styles.col}>
+                <strong>Service:</strong>
+                <input
+                  type="text"
+                  value={selectedLead.service}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+              {selectedLead?.source && (
+                <div style={styles.col}>
+                  <strong>Source:</strong>
+                  <input
+                    type="text"
+                    value={selectedLead.source}
+                    style={{ ...styles.input, textTransform: "uppercase" }}
+                  />
+                </div>
+              )}
+
+              {selectedLead?.service !== "MSME" &&
+                selectedLead?.service !== "SeniorCitizen" &&
+                selectedLead?.service !== "Food License(FSSAI)" &&
+                selectedLead?.applying_for && (
+                  <div style={styles.col}>
+                    <strong>Applying For:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead.applying_for.toUpperCase()}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                )}
+            </div>
+            <div style={styles.row}>
+            {selectedLead?.source !== "contact page" && (
+              <div style={styles.col}>
+                <strong>Amount:</strong>
+                <input
+                  type="text"
+                  value={selectedLead.paidAmount}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+            )}
+              <div style={styles.col}>
+                <strong>Status:</strong>
+                <input
+                  type="text"
+                  value={selectedLead.paymentStatus}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+
+              <div style={styles.col}>
+                <strong>Assigned User:</strong>
+                <input
+                  type="text"
+                  value={selectedLead.assign || "Not Assigned"}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+            </div>
+
+            <div style={styles.row}>
+  {selectedLead?.source !== "contact page" && (
+    <>
+      <div style={styles.col}>
+        <strong>Address:</strong>
+        <input
+          type="text"
+          value={selectedLead.address}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+      <div style={styles.col}>
+        <strong>State:</strong>
+        <input
+          type="text"
+          value={selectedLead?.state}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+      <div style={styles.col}>
+        <strong>District:</strong>
+        <input
+          type="text"
+          value={selectedLead?.district}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+    </>
+  )}
+</div>
+            <div style={styles.row}>
+            {selectedLead?.source !== "contact page" && (
+    <div style={styles.col}>
+      <strong>Pin Code:</strong>
+      <input
+        type="text"
+        value={selectedLead?.pincode}
+        style={{ ...styles.input, textTransform: "uppercase" }}
+      />
+    </div>
+  )}
+              <div style={styles.col}>
+                <strong>Email ID:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.email}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+              <div style={styles.col}>
+                <strong>Mobile Number:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.mobilenumber}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+            </div>
+
+            {/* Render detailed info for "Pancard" */}
             
-                      </div>
-                      <div style={styles.row}>
-                        <div style={styles.col}>
-                          <strong>Amount:</strong>
-                          <input
-                            type="text"
-                            value={selectedLead.paidAmount || "N/A"}
-                            style={{ ...styles.input, textTransform: "uppercase" }} 
-                          />
-                        </div>
-                        <div style={styles.col}>
-                          <strong>Status:</strong>
-                          <input
-                            type="text"
-                            value={selectedLead.paymentStatus || "N/A"}
-                            style={{ ...styles.input, textTransform: "uppercase" }} 
-                          />
-                        </div>
-                     
-                        <div style={styles.col}>
-                          <strong>Assigned User:</strong>
-                          <input
-                            type="text"
-                            value={selectedLead.assign || "Not Assigned"}
-                            style={{ ...styles.input, textTransform: "uppercase" }} 
-                          />
-                        </div>
-                        
-                      </div>
-                      
+            {selectedLead?.source !== "contact page" && selectedLead?.service === "Pancard" && (
+              <>
+                <div style={styles.row}>
+                  {selectedLead?.applying_for !== "newPanCard" && (
+                    <div style={styles.col}>
+                      <strong>Existing Pan Card Number:</strong>
+                      <input
+                        type="text"
+                        value={selectedLead?.existingpancardnumber}
+                        style={{ ...styles.input, textTransform: "uppercase" }}
+                      />
+                    </div>
+                  )}
+                  <div style={styles.col}>
+                    <strong>Aadhar Number:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.adharnumber}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+
+                  <div style={styles.col}>
+                    <strong>Date of Birth:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.dob}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Father Name:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.fathername}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+
+                  <div style={styles.col}>
+                    <strong>Mother Name:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.mothername}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Print on PAN Card:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.printOnPanCard}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Gender:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.gender}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {selectedLead?.service === "TwoWheeler Insurance" && (
+              <>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Registration Date:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.registrationDate}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+
+                  <div style={styles.col}>
+                    <strong>Registration Number:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.registrationNumber}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+            {selectedLead?.service === "Four Wheeler Insurance" && (
+              <>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Registration Date:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.registrationDate}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+
+                  <div style={styles.col}>
+                    <strong>Registration Number:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.registrationNumber}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+            {selectedLead?.service === "Commercial Vehicle" && (
+              <>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Registration Date:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.registrationDate}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+
+                  <div style={styles.col}>
+                    <strong>Registration Number:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.registrationNumber}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+            {selectedLead?.service === "Health Insurance" && (
+              <>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Gender:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.gender}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+
+                  <div style={styles.col}>
+                    <strong>Age:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.age}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Disease:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.disease}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+            {selectedLead?.service === "Life Insurance" && (
+              <>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Gender:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.gender}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Dateof Birth:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.dob}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+            {selectedLead?.source !== "contact page" && selectedLead?.service === "Travel Visa" && (
+              <>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Gender:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.gender}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Travelling Date:</strong>
+                    <input
+                      type="text"
+                      value= { selectedLead?.travellingDate}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Returning Date:</strong>
+                    <input
+                      type="text"
+                      value={formatDateForInput(selectedLead?.returningDate)}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
             
-                      <div style={styles.row}>
-                        <div style={styles.col}>
-                          <strong>Address:</strong>
-                          <input
-                            type="text"
-                            value={selectedLead.address}
-                            style={{ ...styles.input, textTransform: "uppercase" }} 
-                          />
-                        </div>
-                        <div style={styles.col}>
-                          <strong>State:</strong>
-                          <input
-                            type="text"
-                            value={selectedLead?.state}
-                            style={{ ...styles.input, textTransform: "uppercase" }} 
-                          />
-                        </div>
-                        <div style={styles.col}>
-                          <strong>District</strong>
-                          <input
-                            type="text"
-                            value={selectedLead?.district}
-                            style={{ ...styles.input, textTransform: "uppercase" }} 
-                          />
-                        </div>
-                      </div>
-                      <div style={styles.row}>
-                        <div style={styles.col}>
-                          <strong>Pin Code:</strong>
-                          <input
-                            type="text"
-                            value={selectedLead?.pincode}
-                            style={{ ...styles.input, textTransform: "uppercase" }} 
-                          />
-                        </div>
-                        <div style={styles.col}>
-                          <strong>Email ID:</strong>
-                          <input
-                            type="text"
-                            value={selectedLead?.email}
-                            style={{ ...styles.input, textTransform: "uppercase" }} 
-                          />
-                        </div>
-                        <div style={styles.col}>
-                          <strong>Mobile Number:</strong>
-                          <input
-                            type="text"
-                            value={selectedLead?.mobilenumber}
-                            style={{ ...styles.input, textTransform: "uppercase" }} 
-                          />
-                        </div>
-                      </div>
-            
-                      {/* Render detailed info for "Pancard" */}
-                      {selectedLead?.service === "Pancard" && (
-                        <>
-                          <div style={styles.row}>
-                          {selectedLead?.applying_for !== "newPanCard" && (
-        <div style={styles.col}>
-          <strong>Existing Pan Card Number:</strong>
-          <input
-            type="text"
-            value={selectedLead?.existingpancardnumber}
-            style={{ ...styles.input, textTransform: "uppercase" }}
-          />
-        </div>
-      )}
-                            <div style={styles.col}>
-                              <strong>Aadhar Number:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.adharnumber}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-            
-                            <div style={styles.col}>
-                              <strong>Date of Birth:</strong>
-                              <input
-                                type="text"
-                               
-                                value={selectedLead?.dob}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Father Name:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.fathername}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-            
-                            <div style={styles.col}>
-                              <strong>Mother Name:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.mothername}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Print on PAN Card:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.printOnPanCard}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Gender:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.gender}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                        </>
-                      )}
-            
-                      {selectedLead?.service === "TwoWheeler Insurance" && (
-                        <>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Registration Date:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.registrationDate}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-            
-                            <div style={styles.col}>
-                              <strong>Registration Number:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.registrationNumber}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      {selectedLead?.service === "Four Wheeler Insurance" && (
-                        <>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Registration Date:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.registrationDate}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-            
-                            <div style={styles.col}>
-                              <strong>Registration Number:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.registrationNumber}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      {selectedLead?.service === "Commercial Vehicle" && (
-                        <>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Registration Date:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.registrationDate}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-            
-                            <div style={styles.col}>
-                              <strong>Registration Number:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.registrationNumber}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      {selectedLead?.service === "Health Insurance" && (
-                        <>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Gender:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.gender}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-            
-                            <div style={styles.col}>
-                              <strong>Age:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.age}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Disease:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.disease}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      {selectedLead?.service === "Life Insurance" && (
-                        <>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Gender:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.gender}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Dateof Birth:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.dob}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      {selectedLead?.service === "Travel Visa" && (
-                        <>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Gender:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.gender}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Travelling Date:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.travellingDate}
-                                
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Returning Date:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.returningDate}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      {selectedLead?.service === "Rental Agreement" && (
-                        <>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>I am:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.identityOption}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Required Stamp Paper:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.stampPaper}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Owner Name:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.ownername}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Owner Address:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.ownerAddress}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Owner District:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.ownerDistrict}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Owner Pincode:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.ownerPincode}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Tenant Name:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.tenantName}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Tenant Addess:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.tenantaddress}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Tenant District:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.tenantDistrict}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Tenant Pincode:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.tenantPincode}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Shifting Date:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.shiftingdate}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Shifting Address:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.shiftingaddress}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Monthly Rent:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.monthlyrent}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Water Charges:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.waterCharges}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Painting Charges:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.paintingCharges}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Accommodation:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.accommodation}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Appliances/Fittings Details:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.appliancesFittings}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Shipping Address:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.shippingaddress}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      {selectedLead?.service === "Lease Agreement" && (
-                        <>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>I am:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.identityOption}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Required Stamp Paper:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.stampPaper}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Owner Name:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.ownername}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Owner Address:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.ownerAddress}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Owner District:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.ownerDistrict}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Owner Pincode:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.ownerPincode}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Tenant Name:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.tenantName}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Tenant Addess:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.tenantaddress}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Tenant District:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.tenantDistrict}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Tenant Pincode:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.tenantPincode}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Shifting Date:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.shiftingdate}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Shifting Address:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.shiftingaddress}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Monthly Rent:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.monthlyrent}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Water Charges:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.waterCharges}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Painting Charges:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.paintingCharges}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Accommodation:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.accommodation}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Appliances/Fittings Details:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.appliancesFittings}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Shipping Address:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.shippingaddress}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      {selectedLead?.service === "PassPort" && (
-                        <>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong> Type of Application:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.applicationType}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Type of Passport Booklet:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.passportBookletType}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Gender:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.gender}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Date of Birth:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.dob}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Qualification:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.qualification}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Employment Type:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.employmentType}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Marital Status:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.maritalStatus}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Father Name:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.fathername}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Mother Name:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.mothername}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Spouse's Given Name:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.spouseName}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      {selectedLead?.service === "Police Verification Certificate" && (
-                        <>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong> Gender:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.gender}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Date of Birth:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.dob}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Employment Type:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.employmentType}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-            
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Education Qualification:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.qualification}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Date of Birth:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.dob}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      {selectedLead?.service === "MSME" && (
-                        <>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Aadhaar Number:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.adharnumber}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Name of Enterprise/Business:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.businessName}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Type of Organisation:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.organisationType}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-            
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Date of Incorporation / Registration:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.dateOfIncorporation}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Business PAN Number</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.panNumber}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      {selectedLead?.service === "SeniorCitizen" && (
-                        <>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong> Gender:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.gender}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Date of Birth:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.dob}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Blood Group:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.bloodgroup}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      {selectedLead?.service === "Police Clearance Certificate" && (
-                        <>
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong> Gender:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.gender}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Date of Birth:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.dob}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                            <div style={styles.col}>
-                              <strong>Employment Type:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.employmentType}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                          </div>
-            
-                          <div style={styles.row}>
-                            <div style={styles.col}>
-                              <strong>Education Qualification:</strong>
-                              <input
-                                type="text"
-                                value={selectedLead?.qualification}
-                                style={{ ...styles.input, textTransform: "uppercase" }} 
-                              />
-                            </div>
-                           
-                          </div>
-                        </>
-                      )}
+            {selectedLead?.source !== "contact page" && selectedLead?.service === "Rental Agreement" && (
+              <>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>I am:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.identityOption}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Required Stamp Paper:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.stampPaper}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Owner Name:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.ownername}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Owner Address:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.ownerAddress}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Owner District:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.ownerDistrict}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Owner Pincode:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.ownerPincode}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Tenant Name:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.tenantName}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Tenant Addess:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.tenantaddress}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Tenant District:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.tenantDistrict}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Tenant Pincode:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.tenantPincode}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Shifting Date:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.shiftingdate}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Shifting Address:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.shiftingaddress}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Monthly Rent:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.monthlyrent}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Water Charges:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.waterCharges}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Painting Charges:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.paintingCharges}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Accommodation:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.accommodation}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Appliances/Fittings Details:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.appliancesFittings}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Shipping Address:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.shippingaddress}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+           {selectedLead?.source !== "contact page" && selectedLead?.service === "Lease Agreement" && (
+              <>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>I am:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.identityOption}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Required Stamp Paper:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.stampPaper}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Owner Name:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.ownername}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Owner Address:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.ownerAddress}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Owner District:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.ownerDistrict}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Owner Pincode:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.ownerPincode}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Tenant Name:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.tenantName}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Tenant Addess:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.tenantaddress}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Tenant District:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.tenantDistrict}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Tenant Pincode:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.tenantPincode}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Shifting Date:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.shiftingdate}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Shifting Address:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.shiftingaddress}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Monthly Rent:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.monthlyrent}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Water Charges:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.waterCharges}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Painting Charges:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.paintingCharges}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Accommodation:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.accommodation}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Appliances/Fittings Details:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.appliancesFittings}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Shipping Address:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.shippingaddress}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+            {selectedLead?.source !== "contact page" && selectedLead?.service === "PassPort" && (
+              <>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong> Type of Application:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.applicationType}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Type of Passport Booklet:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.passportBookletType}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Gender:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.gender}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Date of Birth:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.dob}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Qualification:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.qualification}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Employment Type:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.employmentType}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Marital Status:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.maritalStatus}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Father Name:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.fathername}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Mother Name:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.mothername}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Spouse's Given Name:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.spouseName}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+          
+          {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Verification Certificate" && (
+              <>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong> Gender:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.gender}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Date of Birth:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.dob}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Employment Type:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.employmentType}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Education Qualification:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.qualification}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  {/* <div style={styles.col}>
+                    <strong>Date of Birth:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.dob}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div> */}
+                </div>
+              </>
+            )}
+            {selectedLead?.service === "MSME" && (
+              <>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Aadhaar Number:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.adharnumber}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Name of Enterprise/Business:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.businessName}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Type of Organisation:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.organisationType}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Date of Incorporation / Registration:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.dateOfIncorporation}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Business PAN Number</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.panNumber}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+            {selectedLead?.service === "SeniorCitizen" && (
+              <>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong> Gender:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.gender}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Date of Birth:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.dob}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Blood Group:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.bloodgroup}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+             
+             {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Clearance Certificate" && (
+              <>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong> Gender:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.gender}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Date of Birth:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.dob}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+                    <strong>Employment Type:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.employmentType}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Education Qualification:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.qualification}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
             
                       {/* Action Buttons */}
                       <div style={styles.actions}>
@@ -1896,7 +1912,7 @@ function TodayFollowUp({selectedItem}) {
           <td style={{ padding: "10px" }}>
             <select
               value={lead.assign || "Select lead user"}
-              onChange={(e) => handleAssignChange(index, e.target.value)}
+              onChange={(e) => handleAssignChange(lead._id, e.target.value)}
               style={{ padding: "5px", borderRadius: "5px", border: "1px solid #ccc", width: "200%" }}
             >
               <option value="Select lead user">Select lead User</option>
@@ -2027,13 +2043,80 @@ function TodayFollowUp({selectedItem}) {
   </div>
 
 
-  {/* Conditionally render Source field only if it exists */}
-  {selectedLead?.source && (
-    <div style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-      <strong>Source:</strong>
+  
+</div>
+      
+{selectedLead?.source && (
+  <div style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
+    <strong>Source:</strong>
+    <input
+      type="text"
+      value={selectedLead.source}
+      style={{
+        width: "100%",
+        padding: "10px",
+        borderRadius: "5px",
+        border: "1px solid #ccc",
+        fontSize: "16px",
+        textTransform: "uppercase",
+      }}
+      readOnly
+    />
+  </div>
+)}
+
+
+{selectedLead?.source?.toLowerCase() !== "contact page" && (
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
+      marginBottom: "10px",
+    }}
+  >
+    {["Address", "State", "District", "Pin Code"].map((label, index) => (
+      <div
+        key={index}
+        style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+      >
+        <strong>{label}:</strong>
+        <input
+          type="text"
+          value={selectedLead?.[label.toLowerCase().replace(" ", "")]}
+          style={{
+            width: "100%",
+            padding: "10px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+            fontSize: "16px",
+            textTransform: "uppercase",
+          }}
+          readOnly
+        />
+      </div>
+    ))}
+  </div>
+)}
+
+
+<div
+  style={{
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    marginBottom: "10px",
+  }}
+>
+  {["Email", "Mobile Number"].map((label, index) => (
+    <div
+      key={index}
+      style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+    >
+      <strong>{label}:</strong>
       <input
         type="text"
-        value={selectedLead.source}
+        value={selectedLead?.[label.toLowerCase().replace(" ", "")]}
         style={{
           width: "100%",
           padding: "10px",
@@ -2042,409 +2125,504 @@ function TodayFollowUp({selectedItem}) {
           fontSize: "16px",
           textTransform: "uppercase",
         }}
+        readOnly
       />
     </div>
-  )}
+  ))}
 </div>
-      
-            {/* Address & Contact Info */}
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", marginBottom: "10px" }}>
-              {["Address", "State", "District", "Pin Code", "Email", "Mobile Number"].map((label, index) => (
-                <div key={index} style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-                  <strong>{label}:</strong>
-                  <input
-                    type="text"
-                    value={selectedLead?.[label.toLowerCase().replace(" ", "")]}
-                    style={{
-                      width: "100%",
-                      padding: "10px",
-                      borderRadius: "5px",
-                      border: "1px solid #ccc",
-                      fontSize: "16px",
-                      textTransform: "uppercase",
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-      
+
+
+
+
+
             {/* Conditional Fields Based on Service Type */}
-            {selectedLead?.service === "Pancard" && (
-      <>
+            {selectedLead?.source !== "contact page" && selectedLead?.service === "Pancard" && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {/* Conditionally Show Existing PAN Card Number */}
+                  {selectedLead?.applying_for !== "newPanCard" && (
+                    <div style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
+                      <strong>Existing Pan Card Number:</strong>
+                      <input
+                        type="text"
+                        value={selectedLead?.existingpancardnumber || ""}
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          borderRadius: "5px",
+                          border: "1px solid #ccc",
+                          fontSize: "16px",
+                          textTransform: "uppercase",
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  {[
+                    { key: "adharnumber", label: "Aadhar Number" },
+                    { key: "dob", label: "Date of Birth" },
+                    { key: "fathername", label: "Father Name" },
+                    { key: "mothername", label: "Mother Name" },
+                    { key: "printOnPanCard", label: "Print on PAN Card" },
+                    { key: "gender", label: "Gender" },
+                  ].map((field, index) => (
+                    <div
+                      key={index}
+                      style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+                    >
+                      <strong>{field.label}:</strong>
+                      <input
+                        type="text"
+                        value={selectedLead?.[field.key] || ""}
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          borderRadius: "5px",
+                          border: "1px solid #ccc",
+                          fontSize: "16px",
+                          textTransform: "uppercase",
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* Two-Wheeler, Four-Wheeler & Commercial Vehicle Insurance */}
+            {[
+              "TwoWheeler Insurance",
+              "Four Wheeler Insurance",
+              "Commercial Vehicle",
+            ].includes(selectedLead?.service) && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {[
+                    { key: "registrationDate", label: "Registration Date" },
+                    { key: "registrationNumber", label: "Registration Number" },
+                  ].map((field, index) => (
+                    <div
+                      key={index}
+                      style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+                    >
+                      <strong>{field.label}:</strong>
+                      <input
+                        type="text"
+                        value={selectedLead?.[field.key] || ""}
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          borderRadius: "5px",
+                          border: "1px solid #ccc",
+                          fontSize: "16px",
+                          textTransform: "uppercase",
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* Health Insurance */}
+            {selectedLead?.service === "Health Insurance" && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {[
+                    { key: "gender", label: "Gender" },
+                    { key: "age", label: "Age" },
+                    { key: "disease", label: "Pre-Existing Disease" },
+                  ].map((field, index) => (
+                    <div
+                      key={index}
+                      style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+                    >
+                      <strong>{field.label}:</strong>
+                      <input
+                        type="text"
+                        value={selectedLead?.[field.key] || ""}
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          borderRadius: "5px",
+                          border: "1px solid #ccc",
+                          fontSize: "16px",
+                          textTransform: "uppercase",
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* Life Insurance */}
+            {selectedLead?.service === "Life Insurance" && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {[
+                    { key: "gender", label: "Gender" },
+                    { key: "dob", label: "Date of Birth" },
+                  ].map((field, index) => (
+                    <div
+                      key={index}
+                      style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+                    >
+                      <strong>{field.label}:</strong>
+                      <input
+                        type="text"
+                        value={selectedLead?.[field.key] || ""}
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          borderRadius: "5px",
+                          border: "1px solid #ccc",
+                          fontSize: "16px",
+                          textTransform: "uppercase",
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+{selectedLead?.source !== "contact page" && selectedLead?.service === "Travel Visa" && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {[
+                    { key: "gender", label: "Gender" },
+                    { key: "travellingDate", label: "Travelling Date" },
+                { key: "returningDate", label: "Returning Date" , isDate:true },
+                  ].map((field, index) => (
+                    <div
+                      key={index}
+                      style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+                    >
+                      <strong>{field.label}:</strong>
+                      <input
+                        type="text"
+                        value={
+                          field.key === "returningDate"
+                            ? formatDateForInput(selectedLead?.[field.key])
+                            : selectedLead?.[field.key] || ""
+                        }
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          borderRadius: "5px",
+                          border: "1px solid #ccc",
+                          fontSize: "16px",
+                          textTransform: "uppercase",
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+{ selectedLead?.source !== "contact page" && selectedLead?.service === "PassPort" && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {[
+                    { key: "applicationType", label: "Type of Application" },
+                    {
+                      key: "passportBookletType",
+                      label: "Type of Passport Booklet",
+                    },
+                    { key: "gender", label: "Gender" },
+                    { key: "dob", label: "Date of Birth" },
+                    { key: "qualification", label: "Qualification" },
+                    { key: "employmentType", label: "Employment Type" },
+                    { key: "maritalStatus", label: "Marital Status" },
+                    { key: "fathername", label: "Father Name" },
+                    { key: "mothername", label: "Mother Name" },
+                    { key: "spouseName", label: "Spouse's Given Name" },
+                  ].map((field, index) => (
+                    <div
+                      key={index}
+                      style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+                    >
+                      <strong>{field.label}:</strong>
+                      <input
+                        type="text"
+                        value={selectedLead?.[field.key] || ""}
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          borderRadius: "5px",
+                          border: "1px solid #ccc",
+                          fontSize: "16px",
+                          textTransform: "uppercase",
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            { selectedLead?.source !== "contact page" &&  ["Rental Agreement", "Lease Agreement"].includes(
+              selectedLead?.service
+            ) && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {[
+                    { key: "identityOption", label: "I am" },
+                    { key: "stampPaper", label: "Required Stamp Paper" },
+                    { key: "ownername", label: "Owner Name" },
+                    { key: "ownerAddress", label: "Owner Address" },
+                    { key: "ownerDistrict", label: "Owner District" },
+                    { key: "ownerPincode", label: "Owner Pincode" },
+                    { key: "tenantName", label: "Tenant Name" },
+                    { key: "tenantaddress", label: "Tenant Address" },
+                    { key: "tenantDistrict", label: "Tenant District" },
+                    { key: "tenantPincode", label: "Tenant Pincode" },
+                    { key: "shiftingdate", label: "Shifting Date" },
+                    { key: "shiftingaddress", label: "Shifting Address" },
+                    { key: "monthlyrent", label: "Monthly Rent" },
+                    { key: "waterCharges", label: "Water Charges" },
+                    { key: "paintingCharges", label: "Painting Charges" },
+                    { key: "accommodation", label: "Accommodation" },
+                    {
+                      key: "appliancesFittings",
+                      label: "Appliances/Fittings Details",
+                    },
+                    { key: "shippingaddress", label: "Shipping Address" },
+                  ].map((field, index) => (
+                    <div
+                      key={index}
+                      style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+                    >
+                      <strong>{field.label}:</strong>
+                      <input
+                        type="text"
+                        value={selectedLead?.[field.key] || ""}
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          borderRadius: "5px",
+                          border: "1px solid #ccc",
+                          fontSize: "16px",
+                          textTransform: "uppercase",
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
        
-    
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", marginBottom: "10px" }}>
-          {/* Conditionally Show Existing PAN Card Number */}
-          {selectedLead?.applying_for !== "newPanCard" && (
-            <div style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-              <strong>Existing Pan Card Number:</strong>
-              <input
-                type="text"
-                value={selectedLead?.existingpancardnumber || ""}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  fontSize: "16px",
-                  textTransform: "uppercase",
-                }}
-              />
-            </div>
-          )}
-    
-          {[
-            { key: "adharnumber", label: "Aadhar Number" },
-            { key: "dob", label: "Date of Birth" },
-            { key: "fathername", label: "Father Name" },
-            { key: "mothername", label: "Mother Name" },
-            { key: "printOnPanCard", label: "Print on PAN Card" },
-            { key: "gender", label: "Gender" }
-          ].map((field, index) => (
-            <div key={index} style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-              <strong>{field.label}:</strong>
-              <input
-                type="text"
-                value={selectedLead?.[field.key] || ""}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  fontSize: "16px",
-                  textTransform: "uppercase",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </>
-    )}
-    
-    
-    
-    {/* Two-Wheeler, Four-Wheeler & Commercial Vehicle Insurance */}
-    {["TwoWheeler Insurance", "Four Wheeler Insurance", "Commercial Vehicle"].includes(selectedLead?.service) && (
-      <>
-       
-    
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", marginBottom: "10px" }}>
-          {[
-            { key: "registrationDate", label: "Registration Date" },
-            { key: "registrationNumber", label: "Registration Number" }
-          ].map((field, index) => (
-            <div key={index} style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-              <strong>{field.label}:</strong>
-              <input
-                type="text"
-                value={selectedLead?.[field.key] || ""}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  fontSize: "16px",
-                  textTransform: "uppercase",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </>
-    )}
-    
-    {/* Health Insurance */}
-    {selectedLead?.service === "Health Insurance" && (
-      <>
-      
-    
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", marginBottom: "10px" }}>
-          {[
-            { key: "gender", label: "Gender" },
-            { key: "age", label: "Age" },
-            { key: "disease", label: "Pre-Existing Disease" }
-          ].map((field, index) => (
-            <div key={index} style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-              <strong>{field.label}:</strong>
-              <input
-                type="text"
-                value={selectedLead?.[field.key] || ""}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  fontSize: "16px",
-                  textTransform: "uppercase",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </>
-    )}
-    
-    {/* Life Insurance */}
-    {selectedLead?.service === "Life Insurance" && (
-      <>
-       
-    
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", marginBottom: "10px" }}>
-          {[
-            { key: "gender", label: "Gender" },
-            { key: "dob", label: "Date of Birth" }
-          ].map((field, index) => (
-            <div key={index} style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-              <strong>{field.label}:</strong>
-              <input
-                type="text"
-                value={selectedLead?.[field.key] || ""}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  fontSize: "16px",
-                  textTransform: "uppercase",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </>
-    )}
-    
-    
-    {selectedLead?.service === "Travel Visa" && (
-      <>
-       
-    
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", marginBottom: "10px" }}>
-          {[
-            { key: "gender", label: "Gender" },
-            { key: "travellingDate", label: "Travelling Date" },
-            { key: "returningDate", label: "Returning Date" }
-          ].map((field, index) => (
-            <div key={index} style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-              <strong>{field.label}:</strong>
-              <input
-                type="text"
-                value={selectedLead?.[field.key] || ""}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  fontSize: "16px",
-                  textTransform: "uppercase",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </>
-    )}
-    
-    {selectedLead?.service === "PassPort" && (
-      <>
-        
-    
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", marginBottom: "10px" }}>
-          {[
-            { key: "applicationType", label: "Type of Application" },
-            { key: "passportBookletType", label: "Type of Passport Booklet" },
-            { key: "gender", label: "Gender" },
-            { key: "dob", label: "Date of Birth" },
-            { key: "qualification", label: "Qualification" },
-            { key: "employmentType", label: "Employment Type" },
-            { key: "maritalStatus", label: "Marital Status" },
-            { key: "fathername", label: "Father Name" },
-            { key: "mothername", label: "Mother Name" },
-            { key: "spouseName", label: "Spouse's Given Name" }
-          ].map((field, index) => (
-            <div key={index} style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-              <strong>{field.label}:</strong>
-              <input
-                type="text"
-                value={selectedLead?.[field.key] || ""}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  fontSize: "16px",
-                  textTransform: "uppercase",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </>
-    )}
-    
-    {["Rental Agreement", "Lease Agreement"].includes(selectedLead?.service) && (
-      <>
-     
-    
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", marginBottom: "10px" }}>
-          {[
-            { key: "identityOption", label: "I am" },
-            { key: "stampPaper", label: "Required Stamp Paper" },
-            { key: "ownername", label: "Owner Name" },
-            { key: "ownerAddress", label: "Owner Address" },
-            { key: "ownerDistrict", label: "Owner District" },
-            { key: "ownerPincode", label: "Owner Pincode" },
-            { key: "tenantName", label: "Tenant Name" },
-            { key: "tenantaddress", label: "Tenant Address" },
-            { key: "tenantDistrict", label: "Tenant District" },
-            { key: "tenantPincode", label: "Tenant Pincode" },
-            { key: "shiftingdate", label: "Shifting Date" },
-            { key: "shiftingaddress", label: "Shifting Address" },
-            { key: "monthlyrent", label: "Monthly Rent" },
-            { key: "waterCharges", label: "Water Charges" },
-            { key: "paintingCharges", label: "Painting Charges" },
-            { key: "accommodation", label: "Accommodation" },
-            { key: "appliancesFittings", label: "Appliances/Fittings Details" },
-            { key: "shippingaddress", label: "Shipping Address" },
-          ].map((field, index) => (
-            <div key={index} style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-              <strong>{field.label}:</strong>
-              <input
-                type="text"
-                value={selectedLead?.[field.key] || ""}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  fontSize: "16px",
-                  textTransform: "uppercase",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </>
-    )}
-    {selectedLead?.service === "Police Verification Certificate" && (
-      <>
-       
-    
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", marginBottom: "10px" }}>
-          {[
-            { key: "gender", label: "Gender" },
-            { key: "dob", label: "Date of Birth" },
-            { key: "employmentType", label: "Employment Type" },
-            { key: "qualification", label: "Education Qualification" }
-          ].map((field, index) => (
-            <div key={index} style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-              <strong>{field.label}:</strong>
-              <input
-                type="text"
-                value={selectedLead?.[field.key] || ""}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  fontSize: "16px",
-                  textTransform: "uppercase",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </>
-    )}
-    
-    {selectedLead?.service === "MSME" && (
-      <>
-        
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", marginBottom: "10px" }}>
-          {[
-            { key: "adharnumber", label: "Aadhaar Number" },
-            { key: "businessName", label: "Name of Enterprise/Business" },
-            { key: "organisationType", label: "Type of Organisation" },
-            { key: "dateOfIncorporation", label: "Date of Incorporation / Registration" },
-            { key: "panNumber", label: "Business PAN Number" }
-          ].map((field, index) => (
-            <div key={index} style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-              <strong>{field.label}:</strong>
-              <input
-                type="text"
-                value={selectedLead?.[field.key] || ""}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  fontSize: "16px",
-                  textTransform: "uppercase",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </>
-    )}
-    {selectedLead?.service === "SeniorCitizen" && (
-      <>
-       
-    
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", marginBottom: "10px" }}>
-          {[
-            { key: "gender", label: "Gender" },
-            { key: "dob", label: "Date of Birth" },
-            { key: "bloodgroup", label: "Blood Group" }
-          ].map((field, index) => (
-            <div key={index} style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-              <strong>{field.label}:</strong>
-              <input
-                type="text"
-                value={selectedLead?.[field.key] || ""}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  fontSize: "16px",
-                  textTransform: "uppercase",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </>
-    )}
-    {selectedLead?.service === "Police Clearance Certificate" && (
-      <>
-        
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", marginBottom: "10px" }}>
-          {[
-            { key: "gender", label: "Gender" },
-            { key: "dob", label: "Date of Birth" },
-            { key: "employmentType", label: "Employment Type" },
-            { key: "qualification", label: "Education Qualification" }
-          ].map((field, index) => (
-            <div key={index} style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-              <strong>{field.label}:</strong>
-              <input
-                type="text"
-                value={selectedLead?.[field.key] || ""}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  fontSize: "16px",
-                  textTransform: "uppercase",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </>
-    )}
+       {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Verification Certificate" && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {[
+                    { key: "gender", label: "Gender" },
+                    { key: "dob", label: "Date of Birth" },
+                    { key: "employmentType", label: "Employment Type" },
+                    { key: "qualification", label: "Education Qualification" },
+                  ].map((field, index) => (
+                    <div
+                      key={index}
+                      style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+                    >
+                      <strong>{field.label}:</strong>
+                      <input
+                        type="text"
+                        value={selectedLead?.[field.key] || ""}
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          borderRadius: "5px",
+                          border: "1px solid #ccc",
+                          fontSize: "16px",
+                          textTransform: "uppercase",
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {selectedLead?.service === "MSME" && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {[
+                    { key: "adharnumber", label: "Aadhaar Number" },
+                    {
+                      key: "businessName",
+                      label: "Name of Enterprise/Business",
+                    },
+                    { key: "organisationType", label: "Type of Organisation" },
+                    {
+                      key: "dateOfIncorporation",
+                      label: "Date of Incorporation / Registration",
+                    },
+                    { key: "panNumber", label: "Business PAN Number" },
+                  ].map((field, index) => (
+                    <div
+                      key={index}
+                      style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+                    >
+                      <strong>{field.label}:</strong>
+                      <input
+                        type="text"
+                        value={selectedLead?.[field.key] || ""}
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          borderRadius: "5px",
+                          border: "1px solid #ccc",
+                          fontSize: "16px",
+                          textTransform: "uppercase",
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+            {selectedLead?.service === "SeniorCitizen" && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {[
+                    { key: "gender", label: "Gender" },
+                    { key: "dob", label: "Date of Birth" },
+                    { key: "bloodgroup", label: "Blood Group" },
+                  ].map((field, index) => (
+                    <div
+                      key={index}
+                      style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+                    >
+                      <strong>{field.label}:</strong>
+                      <input
+                        type="text"
+                        value={selectedLead?.[field.key] || ""}
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          borderRadius: "5px",
+                          border: "1px solid #ccc",
+                          fontSize: "16px",
+                          textTransform: "uppercase",
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+              {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Clearance Certificate" && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {[
+                    { key: "gender", label: "Gender" },
+                    { key: "dob", label: "Date of Birth" },
+                    { key: "employmentType", label: "Employment Type" },
+                    { key: "qualification", label: "Education Qualification" },
+                  ].map((field, index) => (
+                    <div
+                      key={index}
+                      style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+                    >
+                      <strong>{field.label}:</strong>
+                      <input
+                        type="text"
+                        value={selectedLead?.[field.key] || ""}
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          borderRadius: "5px",
+                          border: "1px solid #ccc",
+                          fontSize: "16px",
+                          textTransform: "uppercase",
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
     
       
            {/* Sticky Footer with Buttons in a Single Line */}
@@ -2499,9 +2677,33 @@ function TodayFollowUp({selectedItem}) {
       {[
         { label: "Add Comment", color: "#007BFF", action: handleShow },
         { label: "Follow Up", color: "#28A745", action: () => setShowPopup(true) },
-        { label: "In Process", color: "#FFC107", action: () => updateStatus(selectedLead.id, "In Progress") },
-        { label: "Converted", color: "#17A2B8", action: () => updateStatus(selectedLead.id, "Converted") },
-        { label: "Dead", color: "#DC3545", action: () => updateStatus(selectedLead.id, "Dead") },
+        {
+          label: "In Process",
+          color: "#FFC107",
+          action: () => {
+            if (window.confirm("Are you sure you want to change status to In Progress?")) {
+              updateStatus(selectedLead._id, "In Progress");
+            }
+          },
+        },
+        {
+          label: "Converted",
+          color: "#17A2B8",
+          action: () => {
+            if (window.confirm("Are you sure you want to change status to Converted?")) {
+              updateStatus(selectedLead._id, "Converted");
+            }
+          },
+        },
+        {
+          label: "Dead",
+          color: "#DC3545",
+          action: () => {
+            if (window.confirm("Are you sure you want to change status to Dead?")) {
+              updateStatus(selectedLead._id, "Dead");
+            }
+          },
+        },
       ].map((button, index) => (
         <button
           key={index}

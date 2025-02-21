@@ -6,11 +6,11 @@ import { useNavigate } from "react-router-dom";
 
 function MyProfilePage() {
   const adminData = JSON.parse(sessionStorage.getItem("admin"));
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [mobilenumber, setMobile] = useState("");
-  const [password, setPassword] = useState(""); 
+  const [name, setName] = useState(adminData?.name || "");
+  const [username, setUsername] = useState( adminData?.username ||"");
+  const [email, setEmail] = useState(  adminData?.email ||"");
+  const [mobilenumber, setMobile] = useState(adminData?.mobileNumber ||"");
+  const [password, setPassword] = useState(adminData?.password ||""); 
   const [newPassword, setNewPassword] = useState(""); 
   const [showPassword, setShowPassword] = useState(false); 
   const [profileImage, setProfileImage] = useState(adminData?.profile_picture);
@@ -73,8 +73,12 @@ function MyProfilePage() {
       formData.append("name", name || adminData.name);
       formData.append("username", username || adminData.username);
       formData.append("email", email || adminData.email);
-      formData.append("mobilenumber", mobilenumber || adminData.mobilenumber);
-      formData.append("password", newPassword || password || adminData.password);
+      if(mobilenumber || adminData.mobileNumber){
+      formData.append("mobileNumber", mobilenumber || adminData.mobileNumber);
+      }
+    if(password || adminData.password){
+      formData.append("password",  password || adminData.password);
+    }
   
       // If there's a profile image, append it
       if (profileImage) {
@@ -132,60 +136,7 @@ console.log(response.data.user);
   };
 
 
-  // const handleSave = async () => {
-  //   try {
-  //     const updatedData = {
-  //       id: adminData.id,
-  //       name,
-  //       username,
-  //       email,
-  //       mobilenumber,
-  //       password: newPassword || password,
-  //       profile_picture: profileImage, 
-  //     };
-  
-  //     console.log("updatedData", updatedData);
-  
-  //     const response = await axios.post(
-  //       `https://makemydocuments.nakshatranamahacreations.in/edit-user.php?id=${editingData.id}`,
-  //       updatedData
-  //     );
-  
-  //     console.log('Backend Response:', response);
-  
-  //     if (response.data && response.data.status === 'success') {
-  //       alert("Profile updated successfully");
-  
-  //       console.log("response.data.data", response.data.data);
-  //       localStorage.setItem("admin", JSON.stringify(response.data.data));
-  
-  //       const data = response.data.data;
-  
-  //       setEditingData((prevData) => ({
-  //         ...prevData,
-  //         name: data.name,
-  //         username: data.username,
-  //         email: data.email,
-  //         mobilenumber: data.mobilenumber,
-  //         password: data.password,
-  //         profileImage: data.profileImage,
-  //       }));
-  
-  //       setName(data.name);
-  //       setUsername(data.username);
-  //       setEmail(data.email);
-  //       setMobile(data.mobilenumber);
-  //       setPassword(data.password);
-  //       setProfileImage(data.profileImage);
-  //     } else {
-  //       console.error("Backend response error:", response.data);
-  //       alert("Failed to update profile. Please try again.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating profile", error);
-  //     alert("An error occurred while updating the profile. Please try again.");
-  //   }
-  // };
+
   
  
 
@@ -252,7 +203,8 @@ console.log(response.data.user);
               <input
                 type="text"
                 id="name"
-                value={name || editingData.name || ""}
+                // placeholder={adminData.name}
+                value={name}
                 onChange={(e) => setName(e.target.value)}
                 style={styles.input}
               />
@@ -262,7 +214,7 @@ console.log(response.data.user);
               <input
                 type="text"
                 id="username"
-                value={username || editingData.username || ""}
+                value={username }
                 onChange={(e) => setUsername(e.target.value)}
                 style={styles.input}
               />
@@ -275,7 +227,7 @@ console.log(response.data.user);
               <input
                 type="email"
                 id="email"
-                value={email || editingData.email || ""}
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 style={styles.input}
               />
@@ -285,7 +237,7 @@ console.log(response.data.user);
               <input
                 type="text"
                 id="mobile"
-                value={mobilenumber || editingData.mobileNumber || ""}
+                value={mobilenumber}
                 onChange={(e) => setMobile(e.target.value)}
                 style={styles.input}
               />
@@ -299,7 +251,7 @@ console.log(response.data.user);
     <input
       type={showPassword ? "text" : "password"} // Toggle between text and password type
       id="password"
-      value={password || editingData.password} // Use password from state or editingData
+      value={password } // Use password from state or editingData
       onChange={(e) => setPassword(e.target.value)} // Handle password input change
       placeholder="Enter your password"
       style={styles.input}
@@ -356,29 +308,29 @@ console.log(response.data.user);
         {/* Input Fields */}
         <div className="input-group">
           <label>Name</label>
-          <input type="text" value={name || editingData.name || ""} onChange={(e) => setName(e.target.value)} />
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
         </div>
 
         <div className="input-group">
           <label>Username</label>
-          <input type="text" value={username || editingData.username || ""} onChange={(e) => setUsername(e.target.value)} />
+          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
         </div>
 
         <div className="input-group">
           <label>Email</label>
-          <input type="email"  value={email || editingData.email || ""} onChange={(e) => setEmail(e.target.value)} />
+          <input type="email"  value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
 
         <div className="input-group">
           <label>Mobile Number</label>
-          <input type="text" value={mobilenumber || editingData.mobilenumber || ""} onChange={(e) => setMobile(e.target.value)} />
+          <input type="text" value={mobilenumber} onChange={(e) => setMobile(e.target.value)} />
         </div>
 
         {/* Password Section */}
         <div className="input-group password-group">
           <label>Password</label>
           <div className="password-input">
-            <input type={showPassword ? "text" : "password"}    value={password || editingData.password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter new password"/>
+            <input type={showPassword ? "text" : "password"}    value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter new password"/>
             <span onClick={handleTogglePassword} className="toggle-password">
               {showPassword ? "🙈" : "👁️"} 
             </span>

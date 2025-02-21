@@ -30,6 +30,15 @@ function FollowUp({ selectedItem }) {
     service: null,
     paymentStatus: null,
   });
+
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${day}-${month}-${year}`; // Return in YYYY-MM-DD format
+  };
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const adminData = JSON.parse(sessionStorage.getItem("admin"));
@@ -93,36 +102,39 @@ function FollowUp({ selectedItem }) {
     setSelectedLead(null);
   };
 
-  const handleAssignChange = (index, value) => {
-    const updatedLeads = [...leads];
-    updatedLeads[index].assign = value;
-    setLeads(updatedLeads);
-    sessionStorage.setItem("leads", JSON.stringify(updatedLeads));
-    console.log(updatedLeads);
-
-    const leadId = updatedLeads[index]?._id;
-
-    // if (!leadId) {
-    //   console.error("Invalid data: leadId or value is missing");
-    //   return;
-    // }
-
-    axios
-      .put(`${process.env.REACT_APP_API_URL}/api/lead/updateAssign`, {
-        id: leadId,
-        assign: value,
-      })
-      .then((response) => {
-        const data = response.data;
-        if (data.status === "success") {
-          console.log("Assignment updated successfully");
-        } else {
-          console.error("Failed to update assignment:", data.message);
+  const handleAssignChange = async (leadId, value) => {
+    if (!leadId) {
+      console.error("Invalid data: leadId is missing");
+      return;
+    }
+  
+    // Update the leads array locally
+    setLeads((prevLeads) =>
+      prevLeads.map((lead) =>
+        lead._id === leadId ? { ...lead, assign: value } : lead
+      )
+    );
+  
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/lead/updateAssign`,
+        {
+          id: leadId,
+          assign: value || "Unassigned",
         }
-      })
-      .catch((error) => {
-        console.error("Error during the API call:", error.message);
-      });
+      );
+  
+      const data = response.data;
+      console.log("API Response:", data);
+  
+      if (data.status === "success") {
+        console.log("Assignment updated successfully");
+      } else {
+        console.error("Failed to update assignment:", data.message);
+      }
+    } catch (error) {
+      console.error("Error during the API call:", error.message);
+    }
   };
 
   const handleRowClick = (lead) => {
@@ -593,7 +605,7 @@ function FollowUp({ selectedItem }) {
             <td>
               <select
                 value={lead.assign || "Select lead user"}
-                onChange={(e) => handleAssignChange(index, e.target.value)}
+                onChange={(e) => handleAssignChange(lead._id, e.target.value)}
                 style={styles.select}
               >
                 <option value="Select lead user">Select lead user</option>
@@ -711,19 +723,21 @@ function FollowUp({ selectedItem }) {
                 )}
             </div>
             <div style={styles.row}>
+            {selectedLead?.source !== "contact page" && (
               <div style={styles.col}>
                 <strong>Amount:</strong>
                 <input
                   type="text"
-                  value={selectedLead.paidAmount || "N/A"}
+                  value={selectedLead.paidAmount}
                   style={{ ...styles.input, textTransform: "uppercase" }}
                 />
               </div>
+            )}
               <div style={styles.col}>
                 <strong>Status:</strong>
                 <input
                   type="text"
-                  value={selectedLead.paymentStatus || "N/A"}
+                  value={selectedLead.paymentStatus}
                   style={{ ...styles.input, textTransform: "uppercase" }}
                 />
               </div>
@@ -739,40 +753,46 @@ function FollowUp({ selectedItem }) {
             </div>
 
             <div style={styles.row}>
-              <div style={styles.col}>
-                <strong>Address:</strong>
-                <input
-                  type="text"
-                  value={selectedLead.address}
-                  style={{ ...styles.input, textTransform: "uppercase" }}
-                />
-              </div>
-              <div style={styles.col}>
-                <strong>State:</strong>
-                <input
-                  type="text"
-                  value={selectedLead?.state}
-                  style={{ ...styles.input, textTransform: "uppercase" }}
-                />
-              </div>
-              <div style={styles.col}>
-                <strong>District</strong>
-                <input
-                  type="text"
-                  value={selectedLead?.district}
-                  style={{ ...styles.input, textTransform: "uppercase" }}
-                />
-              </div>
-            </div>
+  {selectedLead?.source !== "contact page" && (
+    <>
+      <div style={styles.col}>
+        <strong>Address:</strong>
+        <input
+          type="text"
+          value={selectedLead.address}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+      <div style={styles.col}>
+        <strong>State:</strong>
+        <input
+          type="text"
+          value={selectedLead?.state}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+      <div style={styles.col}>
+        <strong>District:</strong>
+        <input
+          type="text"
+          value={selectedLead?.district}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+    </>
+  )}
+</div>
             <div style={styles.row}>
-              <div style={styles.col}>
-                <strong>Pin Code:</strong>
-                <input
-                  type="text"
-                  value={selectedLead?.pincode}
-                  style={{ ...styles.input, textTransform: "uppercase" }}
-                />
-              </div>
+            {selectedLead?.source !== "contact page" && (
+    <div style={styles.col}>
+      <strong>Pin Code:</strong>
+      <input
+        type="text"
+        value={selectedLead?.pincode}
+        style={{ ...styles.input, textTransform: "uppercase" }}
+      />
+    </div>
+  )}
               <div style={styles.col}>
                 <strong>Email ID:</strong>
                 <input
@@ -792,7 +812,8 @@ function FollowUp({ selectedItem }) {
             </div>
 
             {/* Render detailed info for "Pancard" */}
-            {selectedLead?.service === "Pancard" && (
+            
+            {selectedLead?.source !== "contact page" && selectedLead?.service === "Pancard" && (
               <>
                 <div style={styles.row}>
                   {selectedLead?.applying_for !== "newPanCard" && (
@@ -983,7 +1004,7 @@ function FollowUp({ selectedItem }) {
                 </div>
               </>
             )}
-            {selectedLead?.service === "Travel Visa" && (
+            {selectedLead?.source !== "contact page" && selectedLead?.service === "Travel Visa" && (
               <>
                 <div style={styles.row}>
                   <div style={styles.col}>
@@ -998,7 +1019,7 @@ function FollowUp({ selectedItem }) {
                     <strong>Travelling Date:</strong>
                     <input
                       type="text"
-                      value={selectedLead?.travellingDate}
+                      value= { selectedLead?.travellingDate}
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
@@ -1006,14 +1027,15 @@ function FollowUp({ selectedItem }) {
                     <strong>Returning Date:</strong>
                     <input
                       type="text"
-                      value={selectedLead?.returningDate}
+                      value={formatDateForInput(selectedLead?.returningDate)}
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
                 </div>
               </>
             )}
-            {selectedLead?.service === "Rental Agreement" && (
+            
+            {selectedLead?.source !== "contact page" && selectedLead?.service === "Rental Agreement" && (
               <>
                 <div style={styles.row}>
                   <div style={styles.col}>
@@ -1173,7 +1195,7 @@ function FollowUp({ selectedItem }) {
                 </div>
               </>
             )}
-            {selectedLead?.service === "Lease Agreement" && (
+           {selectedLead?.source !== "contact page" && selectedLead?.service === "Lease Agreement" && (
               <>
                 <div style={styles.row}>
                   <div style={styles.col}>
@@ -1333,7 +1355,7 @@ function FollowUp({ selectedItem }) {
                 </div>
               </>
             )}
-            {selectedLead?.service === "PassPort" && (
+            {selectedLead?.source !== "contact page" && selectedLead?.service === "PassPort" && (
               <>
                 <div style={styles.row}>
                   <div style={styles.col}>
@@ -1425,7 +1447,8 @@ function FollowUp({ selectedItem }) {
                 </div>
               </>
             )}
-            {selectedLead?.service === "Police Verification Certificate" && (
+          
+          {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Verification Certificate" && (
               <>
                 <div style={styles.row}>
                   <div style={styles.col}>
@@ -1463,14 +1486,14 @@ function FollowUp({ selectedItem }) {
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
-                  <div style={styles.col}>
+                  {/* <div style={styles.col}>
                     <strong>Date of Birth:</strong>
                     <input
                       type="text"
                       value={selectedLead?.dob}
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
-                  </div>
+                  </div> */}
                 </div>
               </>
             )}
@@ -1553,7 +1576,8 @@ function FollowUp({ selectedItem }) {
                 </div>
               </>
             )}
-            {selectedLead?.service === "Police Clearance Certificate" && (
+             
+             {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Clearance Certificate" && (
               <>
                 <div style={styles.row}>
                   <div style={styles.col}>
@@ -1902,7 +1926,7 @@ function FollowUp({ selectedItem }) {
           <td style={{ padding: "10px" }}>
             <select
               value={lead.assign || "Select lead user"}
-              onChange={(e) => handleAssignChange(index, e.target.value)}
+              onChange={(e) => handleAssignChange(lead._id, e.target.value)}
               style={{ padding: "5px", borderRadius: "5px", border: "1px solid #ccc", width: "200%" }}
             >
               <option value="Select lead user">Select lead User</option>
@@ -2050,65 +2074,101 @@ function FollowUp({ selectedItem }) {
               </div>
 
               {/* Conditionally render Source field only if it exists */}
-              {selectedLead?.source && (
-                <div style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-                  <strong>Source:</strong>
-                  <input
-                    type="text"
-                    value={selectedLead.source}
-                    style={{
-                      width: "100%",
-                      padding: "10px",
-                      borderRadius: "5px",
-                      border: "1px solid #ccc",
-                      fontSize: "16px",
-                      textTransform: "uppercase",
-                    }}
-                  />
-                </div>
-              )}
+             
             </div>
 
-            {/* Address & Contact Info */}
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "space-between",
-                marginBottom: "10px",
-              }}
-            >
-              {[
-                "Address",
-                "State",
-                "District",
-                "Pin Code",
-                "Email",
-                "Mobile Number",
-              ].map((label, index) => (
-                <div
-                  key={index}
-                  style={{ flex: "1", minWidth: "48%", margin: "5px" }}
-                >
-                  <strong>{label}:</strong>
-                  <input
-                    type="text"
-                    value={selectedLead?.[label.toLowerCase().replace(" ", "")]}
-                    style={{
-                      width: "100%",
-                      padding: "10px",
-                      borderRadius: "5px",
-                      border: "1px solid #ccc",
-                      fontSize: "16px",
-                      textTransform: "uppercase",
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
+       {/* Conditionally render Source field only if it exists */}
+{selectedLead?.source && (
+  <div style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
+    <strong>Source:</strong>
+    <input
+      type="text"
+      value={selectedLead.source}
+      style={{
+        width: "100%",
+        padding: "10px",
+        borderRadius: "5px",
+        border: "1px solid #ccc",
+        fontSize: "16px",
+        textTransform: "uppercase",
+      }}
+      readOnly
+    />
+  </div>
+)}
+
+
+{selectedLead?.source?.toLowerCase() !== "contact page" && (
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
+      marginBottom: "10px",
+    }}
+  >
+    {["Address", "State", "District", "Pin Code"].map((label, index) => (
+      <div
+        key={index}
+        style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+      >
+        <strong>{label}:</strong>
+        <input
+          type="text"
+          value={selectedLead?.[label.toLowerCase().replace(" ", "")]}
+          style={{
+            width: "100%",
+            padding: "10px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+            fontSize: "16px",
+            textTransform: "uppercase",
+          }}
+          readOnly
+        />
+      </div>
+    ))}
+  </div>
+)}
+
+
+<div
+  style={{
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    marginBottom: "10px",
+  }}
+>
+  {["Email", "Mobile Number"].map((label, index) => (
+    <div
+      key={index}
+      style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+    >
+      <strong>{label}:</strong>
+      <input
+        type="text"
+        value={selectedLead?.[label.toLowerCase().replace(" ", "")]}
+        style={{
+          width: "100%",
+          padding: "10px",
+          borderRadius: "5px",
+          border: "1px solid #ccc",
+          fontSize: "16px",
+          textTransform: "uppercase",
+        }}
+        readOnly
+      />
+    </div>
+  ))}
+</div>
+
+
+
+
 
             {/* Conditional Fields Based on Service Type */}
-            {selectedLead?.service === "Pancard" && (
+            {selectedLead?.source !== "contact page" && selectedLead?.service === "Pancard" && (
               <>
                 <div
                   style={{
@@ -2287,7 +2347,7 @@ function FollowUp({ selectedItem }) {
               </>
             )}
 
-            {selectedLead?.service === "Travel Visa" && (
+{selectedLead?.source !== "contact page" && selectedLead?.service === "Travel Visa" && (
               <>
                 <div
                   style={{
@@ -2300,7 +2360,7 @@ function FollowUp({ selectedItem }) {
                   {[
                     { key: "gender", label: "Gender" },
                     { key: "travellingDate", label: "Travelling Date" },
-                    { key: "returningDate", label: "Returning Date" },
+                    { key: "returningDate", label: "Returning Date",  isDate: true },
                   ].map((field, index) => (
                     <div
                       key={index}
@@ -2309,7 +2369,11 @@ function FollowUp({ selectedItem }) {
                       <strong>{field.label}:</strong>
                       <input
                         type="text"
-                        value={selectedLead?.[field.key] || ""}
+                        value={
+                          field.key === "returningDate"
+                            ? formatDateForInput(selectedLead?.[field.key])
+                            : selectedLead?.[field.key] || ""
+                        }
                         style={{
                           width: "100%",
                           padding: "10px",
@@ -2325,7 +2389,7 @@ function FollowUp({ selectedItem }) {
               </>
             )}
 
-            {selectedLead?.service === "PassPort" && (
+{ selectedLead?.source !== "contact page" && selectedLead?.service === "PassPort" && (
               <>
                 <div
                   style={{
@@ -2373,7 +2437,7 @@ function FollowUp({ selectedItem }) {
               </>
             )}
 
-            {["Rental Agreement", "Lease Agreement"].includes(
+            { selectedLead?.source !== "contact page" &&  ["Rental Agreement", "Lease Agreement"].includes(
               selectedLead?.service
             ) && (
               <>
@@ -2430,7 +2494,8 @@ function FollowUp({ selectedItem }) {
                 </div>
               </>
             )}
-            {selectedLead?.service === "Police Verification Certificate" && (
+       
+       {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Verification Certificate" && (
               <>
                 <div
                   style={{
@@ -2551,7 +2616,7 @@ function FollowUp({ selectedItem }) {
                 </div>
               </>
             )}
-            {selectedLead?.service === "Police Clearance Certificate" && (
+              {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Clearance Certificate" && (
               <>
                 <div
                   style={{
@@ -2589,6 +2654,7 @@ function FollowUp({ selectedItem }) {
                 </div>
               </>
             )}
+
 
             {/* Sticky Footer with Buttons in a Single Line */}
             <div
@@ -2652,17 +2718,29 @@ function FollowUp({ selectedItem }) {
                 {
                   label: "In Process",
                   color: "#FFC107",
-                  action: () => updateStatus(selectedLead._id, "In Progress"),
+                  action: () => {
+                    if (window.confirm("Are you sure you want to change status to In Progress?")) {
+                      updateStatus(selectedLead._id, "In Progress");
+                    }
+                  },
                 },
                 {
                   label: "Converted",
                   color: "#17A2B8",
-                  action: () => updateStatus(selectedLead._id, "converted"),
+                  action: () => {
+                    if (window.confirm("Are you sure you want to change status to Converted?")) {
+                      updateStatus(selectedLead._id, "Converted");
+                    }
+                  },
                 },
                 {
                   label: "Dead",
                   color: "#DC3545",
-                  action: () => updateStatus(selectedLead._id, "dead"),
+                  action: () => {
+                    if (window.confirm("Are you sure you want to change status to Dead?")) {
+                      updateStatus(selectedLead._id, "Dead");
+                    }
+                  },
                 },
               ].map((button, index) => (
                 <button

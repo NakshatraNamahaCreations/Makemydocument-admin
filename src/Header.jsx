@@ -61,7 +61,9 @@ console.log ( selectedItem ,"selectedItem");
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/search`,
-        { search: localQuery.trim() }
+        { search: localQuery.trim(),
+          assign: adminData.name,
+         }
       );
 
       if (response.data.status === "success") {
