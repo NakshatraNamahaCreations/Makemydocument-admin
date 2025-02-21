@@ -512,9 +512,9 @@ const formatTime = (timeString) => {
               }}
             />
           </div>
-          <h2 style={{ marginBottom: "10px" }}>
+          {/* <h2 style={{ marginBottom: "10px" }}>
       {selectedLead?.status ? `Status: ${selectedLead.status}` : "Leads Table"}
-    </h2>
+    </h2> */}
           {/* Table */}
           <table className="leads-table" style={{ width: "100%" }}>
             <thead>
