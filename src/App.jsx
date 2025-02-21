@@ -101,10 +101,12 @@ function App() {
               path="/my-profile"
               element={<MyProfilePage profileImage={profileImage} setProfileImage={setProfileImage} />}
             />
+                    <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-          <Route path="*" element={<Navigate to="/" replace />} />
+        
 
         </Layout>
+
       </Router>
     </SearchProvider>
   );
