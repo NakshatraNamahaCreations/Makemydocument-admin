@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import loginimage from "./images/loginimage.jpg";
 import axios from "axios";
+import { Helmet } from "react-helmet";
 
 function LoginPage() {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
@@ -75,6 +76,15 @@ function LoginPage() {
 
 
   return (
+    <>
+    <Helmet>
+    <title>Login page - Make my Documents</title>
+
+<meta
+  name="author"
+  content="https://leads.makemydocuments.in/"
+/>
+    </Helmet>
     <div
       className="d-flex justify-content-center align-items-center vh-100 vw-100"
       style={{
@@ -196,6 +206,7 @@ function LoginPage() {
         )}
       </div>
     </div>
+    </>
   );
 }
 

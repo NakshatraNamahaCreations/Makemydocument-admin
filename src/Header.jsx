@@ -13,7 +13,7 @@ function Header({ selectedItem }) {
   const offcanvasRef = useRef(null);
   const userProfileRef = useRef(null);
 console.log ( selectedItem ,"selectedItem");
-
+// const { searchData } = location.state || {};
   const adminData = sessionStorage.getItem("admin");
   let parsedAdminData = null;
 
@@ -48,37 +48,38 @@ console.log ( selectedItem ,"selectedItem");
     };
   }, []);
 
-
   const handleSearch = async () => {
     if (!localQuery.trim()) {
-      setError("Search term is required.");
-      return;
+        setError("Search term is required.");
+        return;
     }
 
     setLoading(true);
     setError("");
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/search`,
-        { search: localQuery.trim(),
-          assign: adminData.name,
-         }
-      );
+        const response = await axios.post(
+            `${process.env.REACT_APP_API_URL}/api/search`,
+            {
+                search: localQuery.trim(),
+                assign: parsedAdminData?.name, 
+            }
+        );
 
-      if (response.data.status === "success") {
-        const { data } = response;
-        navigate("/report", { state: { searchData: data } });
-      } else {
-        setError("No results found.");
-      }
+        if (response.data.status === "success") {
+            const { data } = response;
+            navigate("/report", { state: { searchData: data } });
+        } else {
+            setError("No results found.");
+        }
     } catch (error) {
-      console.error("An error occurred while fetching the search results:", error);
-      setError("Failed to fetch search results. Please try again later.");
+        console.error("An error occurred while fetching the search results:", error);
+        setError("Failed to fetch search results. Please try again later.");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
