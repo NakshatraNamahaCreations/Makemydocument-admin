@@ -2662,7 +2662,7 @@ function InProcess({ selectedItem }) {
                   color: "#17A2B8",
                   action: () => {
                     if (window.confirm("Are you sure you want to change status to Converted?")) {
-                      updateStatus(selectedLead._id, "Converted");
+                      updateStatus(selectedLead._id, "converted");
                     }
                   },
                 },
@@ -2671,7 +2671,7 @@ function InProcess({ selectedItem }) {
                   color: "#DC3545",
                   action: () => {
                     if (window.confirm("Are you sure you want to change status to Dead?")) {
-                      updateStatus(selectedLead._id, "Dead");
+                      updateStatus(selectedLead._id, "dead");
                     }
                   },
                 },

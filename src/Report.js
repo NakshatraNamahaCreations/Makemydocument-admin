@@ -512,7 +512,9 @@ const formatTime = (timeString) => {
               }}
             />
           </div>
-
+          <h2 style={{ marginBottom: "10px" }}>
+      {selectedLead?.status ? `Status: ${selectedLead.status}` : "Leads Table"}
+    </h2>
           {/* Table */}
           <table className="leads-table" style={{ width: "100%" }}>
             <thead>
@@ -1655,7 +1657,7 @@ const formatTime = (timeString) => {
                         "Do you want to send the 'Converted' status?"
                       )
                     ) {
-                      updateStatus(selectedLead.id, "Converted");
+                      updateStatus(selectedLead.id, "converted");
                      
                     }
                   }}
@@ -1669,7 +1671,7 @@ const formatTime = (timeString) => {
                     if (
                       window.confirm("Do you want to send the 'Dead' status?")
                     ) {
-                      updateStatus(selectedLead.id, "Dead");
+                      updateStatus(selectedLead.id, "dead");
                     
                     }
                   }}
