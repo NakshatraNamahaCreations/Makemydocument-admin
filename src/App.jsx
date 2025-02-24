@@ -92,7 +92,11 @@ function App() {
             <Route path="/in-process" element={<ProtectedRoute element={<InProcess selectedItem={selectedItem} />} />} />
             <Route path="/converted" element={<ProtectedRoute element={<Converted selectedItem={selectedItem} />} />} />
             <Route path="/dead" element={<ProtectedRoute element={<Dead selectedItem={selectedItem} />} />} />
-            <Route path="/report" element={<ProtectedRoute element={<Report />} />} />
+            <Route 
+  path="/report" 
+  element={<ProtectedRoute element={<Report setSelectedItem={setSelectedItem} />} />} 
+/>
+
             <Route path="/setting" element={<ProtectedRoute element={<Setting />} />} />
             <Route path="/paytms" element={<ProtectedRoute element={<PaytmPayment />} />} />
 
