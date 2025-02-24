@@ -199,6 +199,7 @@ console.log ( selectedItem ,"selectedItem");
                   marginBottom: "5px",
                   fontSize: "14px",
                   fontWeight: "bold",
+                  // marginLeft:"-27%",
                 }}
               >
             
@@ -208,8 +209,9 @@ console.log ( selectedItem ,"selectedItem");
               <p
                 style={{
                   color: "#222",
-                  fontSize: "10px",
+                  fontSize: "9px",
                   marginBottom: "0px",
+                  marginLeft:"-2%",
                 }}
               >
               

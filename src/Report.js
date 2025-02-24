@@ -206,10 +206,57 @@ const formatTime = (timeString) => {
 
 
 
-const getStatusLabel = (status) => {
-  switch (status?.toLowerCase()) {
-    case "followup":
+// const getStatusLabel = (status) => {
+//   switch (status?.toLowerCase()) {
+//     case "followup":
+//       return "Follow-Up";
+//     case "converted":
+//       return "Converted";
+//     case "dead":
+//       return "Dead";
+//     case "in progress":
+//       return "In Process";
+//     case "overdue":
+//       return "Overdue";
+//     case "today followup":
+//       return "Today Follow-Up";
+//     default:
+//       return "Leads Table";
+//   }
+// };
+
+const getStatusLabel = (status, followupDate) => {
+  const today = new Date().setHours(0, 0, 0, 0);
+
+  let followUp = null;
+
+  
+  if (followupDate && /^\d{2}\.\d{2}\.\d{4}$/.test(followupDate)) {
+    const [day, month, year] = followupDate.split(".");
+    followUp = new Date(`${year}-${month}-${day}`);
+  }
+
+  if (!followUp || isNaN(followUp.getTime())) {
+    console.warn("Invalid followupDate:", followupDate);
+    return "Invalid Date";
+  }
+
+  const followUpMidnight = followUp.setHours(0, 0, 0, 0);
+console.log("followup", followUp);
+
+console.log("follupmidnight", followUpMidnight);
+
+  if (status?.toLowerCase() === "followup") {
+    if (followUpMidnight < today) {
+      return "Overdue";
+    } else if (followUpMidnight === today) {
+      return "Today Follow-Up";
+    } else {
       return "Follow-Up";
+    }
+  }
+
+  switch (status?.toLowerCase()) {
     case "converted":
       return "Converted";
     case "dead":
@@ -218,12 +265,11 @@ const getStatusLabel = (status) => {
       return "In Process";
     case "overdue":
       return "Overdue";
-    case "today followup":
-      return "Today Follow-Up";
     default:
       return "Leads Table";
   }
 };
+
 
   
 
@@ -690,8 +736,8 @@ const getStatusLabel = (status) => {
         <div style={styles.details}>
           <h2 style={styles.title}>Lead Details</h2>
           <h4 style={{ marginBottom: "10px" }}>
-      {getStatusLabel(selectedLead?.status)}
-    </h4>
+  {getStatusLabel(selectedLead?.status, selectedLead?.followupDate)}
+</h4>
     <div style={styles.row}>
               <div style={styles.col}>
                 <strong>Date:</strong>
@@ -1282,6 +1328,14 @@ const getStatusLabel = (status) => {
                     />
                   </div>
                 </div>
+                <div style={styles.col}>
+                    <strong>Advance amount</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.safetyDeposit}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
               </>
             )}
            {selectedLead?.source !== "contact page" && selectedLead?.service === "Lease Agreement" && (
@@ -1477,6 +1531,14 @@ const getStatusLabel = (status) => {
                     />
                   </div>
                 </div>
+                <div style={styles.col}>
+                    <strong>Safety Deposit</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.safetyDeposit}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
               </>
             )}
               {selectedLead?.source !== "contact page" && selectedLead?.service === "PassPort" && (
@@ -1870,7 +1932,7 @@ const getStatusLabel = (status) => {
       if (
         window.confirm("Do you want to send the 'converted' status?")
       ) {
-        updateStatus(selectedLead.id, "converted");
+        updateStatus(selectedLead._id, "converted");
       }
     }}
     style={styles.converted}
@@ -1885,7 +1947,7 @@ const getStatusLabel = (status) => {
       if (
         window.confirm("Do you want to send the 'Dead' status?")
       ) {
-        updateStatus(selectedLead.id, "dead");
+        updateStatus(selectedLead._id, "dead");
       }
     }}
     style={styles.dead}
@@ -2663,6 +2725,13 @@ const getStatusLabel = (status) => {
           { key: "tenantsfathername", label: "Tenant Father Name" },
           { key: "securitydeposit", label: "Security Deposit" },
           { key: "advancePaidThrough", label: "Advance Paid Through" },
+             // Conditional fields based on the service type
+             ...(selectedLead?.service === "Lease Agreement"
+              ? [{ key: "safetyDeposit", label: "Safety Deposit" }]
+              : []),
+            ...(selectedLead?.service === "Rental Agreement"
+              ? [{ key: "safetyDeposit", label: "Advance Amount" }]
+              : []),
         ].map((field, index) => (
           <div
             key={index}

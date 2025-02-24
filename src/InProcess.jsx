@@ -1224,6 +1224,14 @@ function InProcess({ selectedItem }) {
                     />
                   </div>
                 </div>
+                <div style={styles.col}>
+                    <strong>Advance amount</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.safetyDeposit}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
               </>
             )}
            {selectedLead?.source !== "contact page" && selectedLead?.service === "Lease Agreement" && (
@@ -1419,6 +1427,14 @@ function InProcess({ selectedItem }) {
                     />
                   </div>
                 </div>
+                <div style={styles.col}>
+                    <strong>Safety Deposit</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.safetyDeposit}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
               </>
             )}
             {selectedLead?.source !== "contact page" && selectedLead?.service === "PassPort" && (
@@ -2570,6 +2586,12 @@ function InProcess({ selectedItem }) {
           { key: "tenantsfathername", label: "Tenant Father Name" },
           { key: "securitydeposit", label: "Security Deposit" },
           { key: "advancePaidThrough", label: "Advance Paid Through" },
+          ...(selectedLead?.service === "Lease Agreement"
+            ? [{ key: "safetyDeposit", label: "Safety Deposit" }]
+            : []),
+          ...(selectedLead?.service === "Rental Agreement"
+            ? [{ key: "safetyDeposit", label: "Advance Amount" }]
+            : []),
         ].map((field, index) => (
           <div
             key={index}
