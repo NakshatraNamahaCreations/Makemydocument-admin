@@ -565,8 +565,9 @@ function Dead({ selectedItem }) {
           {lead.mobilenumber || "N/A"}
         </td>
         <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
-          {lead.service || "N/A"}
-        </td>
+  {lead.service === "PassPort" ? "Passport" : lead.service}
+</td>
+
         <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
           {lead.district || "N/A"}
         </td>
@@ -1975,6 +1976,12 @@ function Dead({ selectedItem }) {
         Name <FaFilter style={styles.icon} onClick={() => handleFilterClick("name")} />
       </th>
       <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
+              District <FaFilter style={styles.icon} onClick={() => handleFilterClick("district")} />
+            </th>
+            <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
+              Mobile Number <FaFilter style={styles.icon} onClick={() => handleFilterClick("mobileNumber")} />
+            </th>
+      <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
         Service <FaFilter style={styles.icon} onClick={() => handleFilterClick("service")} />
       </th>
       <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
@@ -1997,9 +2004,15 @@ function Dead({ selectedItem }) {
         <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
           {lead.name || "N/A"}
         </td>
-        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
-          {lead.service || "N/A"}
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+          {lead.district}
         </td>
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+          {lead.mobilenumber}
+        </td>
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+  {lead.service === "PassPort" ? "Passport" : lead.service}
+</td>
         <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
           <button
             style={{

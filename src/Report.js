@@ -226,37 +226,40 @@ const formatTime = (timeString) => {
 // };
 
 const getStatusLabel = (status, followupDate) => {
-  const today = new Date().setHours(0, 0, 0, 0);
-
-  let followUp = null;
-
   
-  if (followupDate && /^\d{2}\.\d{2}\.\d{4}$/.test(followupDate)) {
-    const [day, month, year] = followupDate.split(".");
-    followUp = new Date(`${year}-${month}-${day}`);
-  }
+  if (!status) return "Leads Table";
 
-  if (!followUp || isNaN(followUp.getTime())) {
-    console.warn("Invalid followupDate:", followupDate);
-    return "Invalid Date";
-  }
+ 
+  if (status.toLowerCase() === "followup") {
+    
+    if (followupDate && /^\d{2}\.\d{2}\.\d{4}$/.test(followupDate)) {
+      const [day, month, year] = followupDate.split(".");
+      const followUp = new Date(`${year}-${month}-${day}`);
+      
+     
+      if (isNaN(followUp.getTime())) {
+        console.warn("Invalid followupDate:", followupDate);
+        return "Leads Table";
+      }
+      
+      const today = new Date().setHours(0, 0, 0, 0);
+      const followUpMidnight = followUp.setHours(0, 0, 0, 0);
 
-  const followUpMidnight = followUp.setHours(0, 0, 0, 0);
-console.log("followup", followUp);
-
-console.log("follupmidnight", followUpMidnight);
-
-  if (status?.toLowerCase() === "followup") {
-    if (followUpMidnight < today) {
-      return "Overdue";
-    } else if (followUpMidnight === today) {
-      return "Today Follow-Up";
+      if (followUpMidnight < today) {
+        return "Overdue";
+      } else if (followUpMidnight === today) {
+        return "Today Follow-Up";
+      } else {
+        return "Follow-Up";
+      }
     } else {
-      return "Follow-Up";
+     
+      return "Leads Table";
     }
   }
 
-  switch (status?.toLowerCase()) {
+ 
+  switch (status.toLowerCase()) {
     case "converted":
       return "Converted";
     case "dead":
@@ -269,6 +272,7 @@ console.log("follupmidnight", followUpMidnight);
       return "Leads Table";
   }
 };
+
 
 
   
@@ -665,8 +669,9 @@ console.log("follupmidnight", followUpMidnight);
                 {lead.mobilenumber}
               </td>
               <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
-                {lead.service}
-              </td>
+  {lead.service === "PassPort" ? "Passport" : lead.service}
+</td>
+
               <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
                 {lead.paidAmount}
               </td>
@@ -2126,6 +2131,12 @@ console.log("follupmidnight", followUpMidnight);
       <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
         Name <FaFilter style={styles.icon} onClick={() => handleFilterClick("name")} />
       </th>
+       <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
+              District <FaFilter style={styles.icon} onClick={() => handleFilterClick("district")} />
+            </th>
+            <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
+              Mobile Number <FaFilter style={styles.icon} onClick={() => handleFilterClick("mobileNumber")} />
+            </th>
       <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
         Service <FaFilter style={styles.icon} onClick={() => handleFilterClick("service")} />
       </th>
@@ -2150,9 +2161,15 @@ console.log("follupmidnight", followUpMidnight);
           <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
             {lead.name}
           </td>
-          <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
-            {lead.service}
-          </td>
+          <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+          {lead.district}
+        </td>
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+          {lead.mobilenumber}
+        </td>
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+  {lead.service === "PassPort" ? "Passport" : lead.service}
+</td>
           <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
             <button
               style={{

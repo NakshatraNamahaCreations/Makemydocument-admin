@@ -595,7 +595,9 @@ console.log(adminData.name);
         </td>
         <td onClick={() => handleRowClick(lead)}>{lead.name}</td>
         <td onClick={() => handleRowClick(lead)}>{lead.mobilenumber}</td>
-        <td onClick={() => handleRowClick(lead)}>{lead.service}</td>
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+  {lead.service === "PassPort" ? "Passport" : lead.service}
+</td>
         <td onClick={() => handleRowClick(lead)}>{lead.district}</td>
         <td onClick={() => handleRowClick(lead)}>{lead.paidAmount || "0.00"}</td>
         <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
@@ -2023,6 +2025,12 @@ console.log(adminData.name);
       <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
         Name <FaFilter style={styles.icon} onClick={() => handleFilterClick("name")} />
       </th>
+       <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
+              District <FaFilter style={styles.icon} onClick={() => handleFilterClick("district")} />
+            </th>
+            <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
+              Mobile Number <FaFilter style={styles.icon} onClick={() => handleFilterClick("mobileNumber")} />
+            </th>
       <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
         Service <FaFilter style={styles.icon} onClick={() => handleFilterClick("service")} />
       </th>
@@ -2046,9 +2054,15 @@ console.log(adminData.name);
         <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
           {lead.name}
         </td>
-        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
-          {lead.service}
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+          {lead.district}
         </td>
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+          {lead.mobilenumber}
+        </td>
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+  {lead.service === "PassPort" ? "Passport" : lead.service}
+</td>
         <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
           <button
             style={{
