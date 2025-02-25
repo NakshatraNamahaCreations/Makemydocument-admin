@@ -355,11 +355,11 @@ function NewLeads({ selectedItem }) {
     fetchCommentData(lead._id);
   };
 
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= Math.ceil(leads.length / leadsPerPage)) {
-      setCurrentPage(newPage); // Update page number
-    }
-  };
+  // const handlePageChange = (newPage) => {
+  //   if (newPage >= 1 && newPage <= Math.ceil(leads.length / leadsPerPage)) {
+  //     setCurrentPage(newPage); // Update page number
+  //   }
+  // };
   const formatDateForInput = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -2146,13 +2146,13 @@ function NewLeads({ selectedItem }) {
         <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
           {lead.name}
         </td>
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => handleRowClick(lead)}>
           {lead.district}
         </td>
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => handleRowClick(lead)}>
           {lead.mobilenumber}
         </td>
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => handleRowClick(lead)}>
   {lead.service === "PassPort" ? "Passport" : lead.service}
 </td>
         <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>

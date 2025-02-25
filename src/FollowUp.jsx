@@ -402,6 +402,12 @@ function FollowUp({ selectedItem }) {
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
   const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
 
+  useEffect(() => {
+    if (currentPage > Math.ceil(filteredLeads.length / leadsPerPage)) {
+      setCurrentPage(1);
+    }
+  }, [filteredLeads, currentPage]);
+
   const filteredByAppliedFilters = applyFilters(currentLeads);
 
   // Now filter based on the search query
@@ -563,8 +569,8 @@ function FollowUp({ selectedItem }) {
     </tr>
   </thead>
   <tbody>
-    {filteredLeads.length > 0 ? (
-      filteredLeads.map((lead, index) => (
+    {currentLeads.length > 0 ? (
+      currentLeads.map((lead, index) => (
         <tr key={index} style={styles.tableRow}>
           <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
             {index + 1 + (currentPage - 1) * leadsPerPage}
@@ -579,8 +585,8 @@ function FollowUp({ selectedItem }) {
             {lead.mobilenumber}
           </td>
           <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
-  {lead.service === "PassPort" ? "Passport" : lead.service}
-</td>
+            {lead.service === "PassPort" ? "Passport" : lead.service}
+          </td>
           <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
             {lead.district || "N/A"}
           </td>
@@ -591,9 +597,9 @@ function FollowUp({ selectedItem }) {
             <button
               style={{
                 ...styles.statusButton,
-                backgroundColor: lead.paymentStatus.trim().toLowerCase() === "paid" ? "#4CAF50" : "#ff9800",
+                backgroundColor: lead.paymentStatus?.trim().toLowerCase() === "paid" ? "#4CAF50" : "#ff9800",
               }}
-              disabled={lead.paymentStatus.trim().toLowerCase() === "paid"}
+              disabled={lead.paymentStatus?.trim().toLowerCase() === "paid"}
             >
               {lead.paymentStatus ? lead.paymentStatus : "unpaid"}
             </button>
@@ -629,26 +635,27 @@ function FollowUp({ selectedItem }) {
   </tbody>
 </table>
 
-            <div
-              className="pagination"
-              style={{ marginTop: "20px", textAlign: "center" }}
-            >
-              <button
-                onClick={() => setCurrentPage(currentPage - 1)}
-                disabled={currentPage === 1}
-                style={{ marginRight: "10px" }}
-              >
-                Prev
-              </button>
-              <span>Page {currentPage}</span>
-              <button
-                onClick={() => setCurrentPage(currentPage + 1)}
-                disabled={currentPage * leadsPerPage >= leads.length}
-                style={{ marginLeft: "10px" }}
-              >
-                Next
-              </button>
-            </div>
+
+<div className="pagination" style={{ marginTop: "20px", textAlign: "center" }}>
+  <button
+    onClick={() => setCurrentPage(currentPage - 1)}
+    disabled={currentPage === 1}
+    style={{ marginRight: "10px" }}
+  >
+    Prev
+  </button>
+  <span>
+    Page {currentPage} of {Math.ceil(filteredLeads.length / leadsPerPage)}
+  </span>
+  <button
+    onClick={() => setCurrentPage(currentPage + 1)}
+    disabled={indexOfLastLead >= filteredLeads.length}
+    style={{ marginLeft: "10px" }}
+  >
+    Next
+  </button>
+</div>
+
           </div>
         ) : (
           <div style={styles.details}>
@@ -2068,13 +2075,13 @@ function FollowUp({ selectedItem }) {
         <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
           {lead.name}
         </td>
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => handleRowClick(lead)}>
           {lead.district}
         </td>
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => handleRowClick(lead)}>
           {lead.mobilenumber}
         </td>
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => handleRowClick(lead)}>
   {lead.service === "PassPort" ? "Passport" : lead.service}
 </td>
         <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>

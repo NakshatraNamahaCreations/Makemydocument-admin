@@ -2054,13 +2054,13 @@ console.log(adminData.name);
         <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
           {lead.name}
         </td>
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => handleRowClick(lead)}>
           {lead.district}
         </td>
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => handleRowClick(lead)}>
           {lead.mobilenumber}
         </td>
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => handleRowClick(lead)}>
   {lead.service === "PassPort" ? "Passport" : lead.service}
 </td>
         <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => setSelectedLead(lead)}>
