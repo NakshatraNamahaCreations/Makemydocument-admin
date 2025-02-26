@@ -592,16 +592,16 @@ console.log(adminData.name);
   <tbody>
     {currentLeads.map((lead, index) => (
       <tr key={index} style={styles.tableRow}>
-        <td>{index + 1 + (currentPage - 1) * leadsPerPage}</td>
-        <td style={{ ...styles.tableCell, whiteSpace: "nowrap" }}>{lead.date}</td>
-        <td>{lead.name}</td>
-        <td>{lead.mobilenumber}</td>
-        <td>{lead.district}</td>
-        <td style={styles.tableCell}>
+        <td   onClick={() => handleRowClick(lead)}>{index + 1 + (currentPage - 1) * leadsPerPage}</td>
+        <td style={{ ...styles.tableCell, whiteSpace: "nowrap" }}   onClick={() => handleRowClick(lead)}>{lead.date}</td>
+        <td   onClick={() => handleRowClick(lead)}>{lead.name}</td>
+        <td   onClick={() => handleRowClick(lead)}>{lead.mobilenumber}</td>
+        <td   onClick={() => handleRowClick(lead)}>{lead.district}</td>
+        <td style={styles.tableCell}   onClick={() => handleRowClick(lead)}>
           {lead.service === "PassPort" ? "Passport" : lead.service}
         </td>
-        <td>{lead.paidAmount || "0.00"}</td>
-        <td style={styles.tableCell}>
+        <td   onClick={() => handleRowClick(lead)}>{lead.paidAmount || "0.00"}</td>
+        <td style={styles.tableCell}   onClick={() => handleRowClick(lead)}>
           <button
             style={{
               ...styles.statusButton,
@@ -772,6 +772,7 @@ console.log(adminData.name);
   </div>
 )}
 
+{ selectedLead?.service !== "PassPort" && (
               <div style={styles.col}>
                 <strong>Name:</strong>
                 <input
@@ -780,12 +781,13 @@ console.log(adminData.name);
                   style={{ ...styles.input, textTransform: "uppercase" }}
                 />
               </div>
+)}
             </div>
 
             <div style={styles.row}>
   {selectedLead?.source !== "contact page" && (
     <>
-{selectedLead?.service !== "Rental Agreement" && selectedLead?.service !== "Lease Agreement" && selectedLead?.service !== "Pancard" && (
+{selectedLead?.service !== "Rental Agreement" && selectedLead?.service !== "Lease Agreement" && selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" &&  (
     <div style={styles.col}>
         <strong>Address:</strong>
         <input
@@ -798,7 +800,7 @@ console.log(adminData.name);
 )}
 
 
-{ selectedLead?.service !== "Pancard" && (
+{ selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" &&(
       <div style={styles.col}>
         <strong>State:</strong>
         <input
@@ -808,7 +810,7 @@ console.log(adminData.name);
         />
       </div>
       )}
-      { selectedLead?.service !== "Pancard" && (
+      { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" &&(
       <div style={styles.col}>
         <strong>District:</strong>
         <input
@@ -823,7 +825,7 @@ console.log(adminData.name);
   )}
 </div>
             <div style={styles.row}>
-            {selectedLead?.source !== "contact page" &&  selectedLead?.service !== "Pancard" && (
+            {selectedLead?.source !== "contact page" &&  selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && (
     <div style={styles.col}>
       <strong>Pin Code:</strong>
       <input
@@ -833,7 +835,7 @@ console.log(adminData.name);
       />
     </div>
   )}
-    { selectedLead?.service !== "Pancard" && (
+    { selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && (
               <div style={styles.col}>
                 <strong>Email ID:</strong>
                 <input
@@ -843,7 +845,7 @@ console.log(adminData.name);
                 />
               </div>
     )}
-      { selectedLead?.service !== "Pancard" && (
+      { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" &&(
               <div style={styles.col}>
                 <strong>Mobile Number:</strong>
                 <input
@@ -1545,7 +1547,7 @@ console.log(adminData.name);
                   </div>
               </>
             )}
-           {selectedLead?.source !== "contact page" && selectedLead?.service === "PassPort" && (
+          {selectedLead?.source !== "contact page" && selectedLead?.service === "PassPort" && (
               <>
                 <div style={styles.row}>
                   <div style={styles.col}>
@@ -1564,6 +1566,26 @@ console.log(adminData.name);
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
+
+                  <div style={styles.col}>
+                <strong>Name:</strong>
+                <input
+                  type="text"
+                  value={selectedLead.name}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+                 
+                </div>
+                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>SurName</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.surname}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
                   <div style={styles.col}>
                     <strong>Gender:</strong>
                     <input
@@ -1572,8 +1594,6 @@ console.log(adminData.name);
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
-                </div>
-                <div style={styles.row}>
                   <div style={styles.col}>
                     <strong>Date of Birth:</strong>
                     <input
@@ -1582,22 +1602,36 @@ console.log(adminData.name);
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
-                  <div style={styles.col}>
-                    <strong>Qualification:</strong>
+                  </div>
+                <div style={styles.row}>
+                <div style={styles.col}>
+                    <strong>Place of Birth</strong>
                     <input
                       type="text"
-                      value={selectedLead?.qualification}
+                      value={selectedLead?.placeofbirth}
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
+
                   <div style={styles.col}>
-                    <strong>Employment Type:</strong>
+                    <strong>Father Name:</strong>
                     <input
                       type="text"
-                      value={selectedLead?.employmentType}
+                      value={selectedLead?.fathername}
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
+
+                  <div style={styles.col}>
+                    <strong>Mother Name:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.mothername}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+               
+                 
                 </div>
                 <div style={styles.row}>
                   <div style={styles.col}>
@@ -1608,25 +1642,7 @@ console.log(adminData.name);
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
-                  <div style={styles.col}>
-                    <strong>Father Name:</strong>
-                    <input
-                      type="text"
-                      value={selectedLead?.fathername}
-                      style={{ ...styles.input, textTransform: "uppercase" }}
-                    />
-                  </div>
-                  <div style={styles.col}>
-                    <strong>Mother Name:</strong>
-                    <input
-                      type="text"
-                      value={selectedLead?.mothername}
-                      style={{ ...styles.input, textTransform: "uppercase" }}
-                    />
-                  </div>
-                </div>
-                <div style={styles.row}>
-                {(selectedLead?.maritalStatus?.toLowerCase() === "married" || 
+                  {(selectedLead?.maritalStatus?.toLowerCase() === "married" || 
           selectedLead?.maritalStatus?.toLowerCase() === "separated") && (
             <div style={styles.row}>
                 <div style={styles.col}>
@@ -1639,24 +1655,64 @@ console.log(adminData.name);
                 </div>
             </div>
         )}
+   <div style={styles.col}>
+                    <strong>Qualification:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.qualification}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                
                 </div>
                 <div style={styles.row}>
-                  <div style={styles.col}>
-                    <strong>SurName</strong>
+                <div style={styles.col}>
+                    <strong>Employment Type:</strong>
                     <input
                       type="text"
-                      value={selectedLead?.surname}
+                      value={selectedLead?.employmentType}
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
+
                   <div style={styles.col}>
-                    <strong>Place of Birth</strong>
-                    <input
-                      type="text"
-                      value={selectedLead?.placeofbirth}
-                      style={{ ...styles.input, textTransform: "uppercase" }}
-                    />
-                  </div>
+        <strong>Address:</strong>
+        <input
+            type="text"
+            value={selectedLead?.address}
+            style={{ ...styles.input, textTransform: "uppercase" }}
+            placeholder="Enter Address"
+        />
+    </div>
+    <div style={styles.col}>
+        <strong>State:</strong>
+        <input
+          type="text"
+          value={selectedLead?.state}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+
+                </div>
+                <div style={styles.row}>
+                <div style={styles.col}>
+        <strong>District:</strong>
+        <input
+          type="text"
+          value={selectedLead?.district}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+
+      <div style={styles.col}>
+      <strong>Pin Code:</strong>
+      <input
+        type="text"
+        value={selectedLead?.pincode}
+        style={{ ...styles.input, textTransform: "uppercase" }}
+      />
+    </div>
+               
                   <div style={styles.col}>
                     <strong>Nearest Police Station</strong>
                     <input
@@ -1666,6 +1722,26 @@ console.log(adminData.name);
                     />
                   </div>
                   </div>
+                  <div style={styles.row}>
+
+                  <div style={styles.col}>
+                <strong>Mobile Number:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.mobilenumber}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+              <div style={styles.col}>
+                <strong>Email ID:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.email}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+
+                    </div>
               </>
             )}
           
@@ -2678,58 +2754,77 @@ console.log(adminData.name);
               </>
             )}
 
-{selectedLead?.source !== "contact page" && selectedLead?.service === "PassPort" && (
+
+{selectedLead?.source !== 'contact page' && selectedLead?.service === 'PassPort' && (
     <>
         <div
             style={{
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "space-between",
-                marginBottom: "10px",
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+                marginBottom: '10px',
             }}
         >
             {[
-                { key: "applicationType", label: "Type of Application" },
-                { key: "passportBookletType", label: "Type of Passport Booklet" },
-                { key: "gender", label: "Gender" },
-                { key: "dob", label: "Date of Birth" },
-                { key: "qualification", label: "Qualification" },
-                { key: "employmentType", label: "Employment Type" },
-                { key: "maritalStatus", label: "Marital Status" },
-                { key: "fathername", label: "Father Name" },
-                { key: "mothername", label: "Mother Name" },
-                { key: "surname", label: "SurName" },
-                { key: "placeofbirth", label: "Place of Birth" },
-                { key: "nearby_police_station", label: "Nearest Police Station" },
-
-                // Conditionally add Spouse's Given Name based on Marital Status
-                ...(selectedLead?.maritalStatus?.toLowerCase() === "married" ||
-                selectedLead?.maritalStatus?.toLowerCase() === "separated"
-                    ? [{ key: "spouseName", label: "Spouse's Given Name" }]
-                    : []),
-            ].map((field, index) => (
-                <div
-                    key={index}
-                    style={{ flex: "1", minWidth: "48%", margin: "5px" }}
-                >
-                    <strong>{field.label}:</strong>
-                    <input
-                        type="text"
-                        value={selectedLead?.[field.key] || ""}
-                        style={{
-                            width: "100%",
-                            padding: "10px",
-                            borderRadius: "5px",
-                            border: "1px solid #ccc",
-                            fontSize: "16px",
-                            textTransform: "uppercase",
-                        }}
-                    />
-                </div>
-            ))}
+                { label: 'Date', key: 'date' },
+                { label: 'Time', key: 'time' },
+                { label: 'Order Id', key: 'orderId' },
+                { label: 'Service', key: 'service' },
+                { label: 'Applying For', key: 'applying_for' },
+                { label: 'Amount', key: 'paidAmount' },
+                { label: 'Status', key: 'paymentStatus' },
+                { label: 'Assigned User', key: 'assign' },
+                { label: 'Type of Application', key: 'applicationType' },
+                { label: 'Type of Passport Booklet', key: 'passportBookletType' },
+                { label: 'Name', key: 'name' },
+                { label: 'SurName', key: 'surname' },
+                { label: 'Gender', key: 'gender' },
+                { label: 'Date of Birth', key: 'dob' },
+                { label: 'Place of Birth', key: 'placeofbirth' },
+                { label: 'Father Name', key: 'fathername' },
+                { label: 'Mother Name', key: 'mothername' },
+                { label: 'Marital Status', key: 'maritalStatus' },
+                { label: 'Qualification', key: 'qualification' },
+                { label: 'Employment Type', key: 'employmentType' },
+                { label: 'Address', key: 'address' },
+                { label: 'State', key: 'state' },
+                { label: 'District', key: 'district' },
+                { label: 'Pin Code', key: 'pincode' },
+                { label: 'Nearest Police Station', key: 'nearby_police_station' },
+                { label: 'Mobile Number', key: 'mobilenumber' },
+                { label: 'Email ID', key: 'email' },
+            ]
+                .concat(
+                    selectedLead?.maritalStatus?.toLowerCase() === 'married' ||
+                    selectedLead?.maritalStatus?.toLowerCase() === 'separated'
+                        ? [{ label: "Spouse's Given Name", key: 'spouseName' }]
+                        : []
+                )
+                .map(({ label, key }, index) => (
+                    <div
+                        key={index}
+                        style={{ flex: '1', minWidth: '48%', margin: '5px' }}
+                    >
+                        <strong>{label}:</strong>
+                        <input
+                            type='text'
+                            value={selectedLead?.[key] || ''}
+                            style={{
+                                width: '100%',
+                                padding: '10px',
+                                borderRadius: '5px',
+                                border: '1px solid #ccc',
+                                fontSize: '16px',
+                                textTransform: 'uppercase',
+                            }}
+                            readOnly
+                        />
+                    </div>
+                ))}
         </div>
     </>
 )}
+
 
 {selectedLead?.source !== "contact page" &&
   ["Rental Agreement", "Lease Agreement"].includes(selectedLead?.service) && (
