@@ -578,7 +578,7 @@ function TodayFollowUp({selectedItem}) {
         Service <FaFilter style={styles.icon} onClick={() => handleFilterClick("service")} />
       </th>
       <th style={styles.tableHeader}>
-        Paid Amount <FaFilter style={styles.icon} />
+        Amount <FaFilter style={styles.icon} />
       </th>
       <th style={styles.tableHeader}>
         Status <FaFilter style={styles.icon} onClick={() => handleFilterClick("status")} />

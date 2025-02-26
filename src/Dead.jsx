@@ -154,7 +154,12 @@ function Dead({ selectedItem }) {
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
   const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
 
-
+  useEffect(() => {
+    const totalPages = Math.ceil(filteredLeads.length / leadsPerPage);
+    if (currentPage > totalPages) {
+      setCurrentPage(1);
+    }
+  }, [filteredLeads]);
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -540,43 +545,32 @@ function Dead({ selectedItem }) {
       <th style={styles.tableHeader}>
         Service <FaFilter style={styles.icon} onClick={() => handleFilterClick("service")} />
       </th>
-     
       <th style={styles.tableHeader}>
-        Paid Amount <FaFilter style={styles.icon} />
+        Amount <FaFilter style={styles.icon} />
       </th>
       <th style={styles.tableHeader}>
-        Status <FaFilter style={styles.icon}  onClick={() => handleFilterClick("status")}/>
+        Status <FaFilter style={styles.icon} onClick={() => handleFilterClick("status")} />
       </th>
       {adminData?.role === "admin" && <th style={styles.tableHeader}>Assign</th>}
     </tr>
   </thead>
   <tbody>
-    {filteredLeads.map((lead, index) => (
+    {currentLeads.map((lead, index) => (
       <tr key={index}>
         <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
           {index + 1 + (currentPage - 1) * leadsPerPage}
         </td>
-        <td style={{ ...styles.tableCell, whiteSpace: "nowrap" }} onClick={() => handleRowClick(lead)}>
+        <td style={{ ...styles.tableCell, whiteSpace: "nowrap" }}>
           {lead.date || "N/A"}
         </td>
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
-          {lead.name || "N/A"}
+        <td style={styles.tableCell}>{lead.name || "N/A"}</td>
+        <td style={styles.tableCell}>{lead.mobilenumber || "N/A"}</td>
+        <td style={styles.tableCell}>{lead.district || "N/A"}</td>
+        <td style={styles.tableCell}>
+          {lead.service === "PassPort" ? "Passport" : lead.service}
         </td>
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
-          {lead.mobilenumber || "N/A"}
-        </td>
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
-          {lead.district || "N/A"}
-        </td>
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
-  {lead.service === "PassPort" ? "Passport" : lead.service}
-</td>
-
-       
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
-          {lead.paidAmount || "0.00"}
-        </td>
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+        <td style={styles.tableCell}>{lead.paidAmount || "0.00"}</td>
+        <td style={styles.tableCell}>
           <button
             style={{
               ...styles.statusButton,
@@ -609,27 +603,28 @@ function Dead({ selectedItem }) {
 </table>
 
 
+
             {/* Pagination Controls */}
-            <div
-              className="pagination"
-              style={{ marginTop: "20px", textAlign: "center" }}
-            >
-              <button
-                onClick={() => setCurrentPage(currentPage - 1)}
-                disabled={currentPage === 1}
-                style={{ marginRight: "10px" }}
-              >
-                Prev
-              </button>
-              <span>Page {currentPage}</span>
-              <button
-                onClick={() => setCurrentPage(currentPage + 1)}
-                disabled={currentPage * leadsPerPage >= leads.length}
-                style={{ marginLeft: "10px" }}
-              >
-                Next
-              </button>
-            </div>
+            <div className="pagination" style={{ marginTop: "20px", textAlign: "center" }}>
+  <button
+    onClick={() => setCurrentPage(currentPage - 1)}
+    disabled={currentPage === 1}
+    style={{ marginRight: "10px" }}
+  >
+    Prev
+  </button>
+  <span>
+    Page {currentPage} of {Math.max(Math.ceil(filteredLeads.length / leadsPerPage), 1)}
+  </span>
+  <button
+    onClick={() => setCurrentPage(currentPage + 1)}
+    disabled={currentPage >= Math.ceil(filteredLeads.length / leadsPerPage)}
+    style={{ marginLeft: "10px" }}
+  >
+    Next
+  </button>
+</div>
+
           </div>
         ) : (
           <div style={styles.details}>

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Modal } from "react-bootstrap";
-import { useLocation } from 'react-router-dom';
+import { useLocation , useNavigate } from 'react-router-dom';
 import { FaTrash,FaFilter, FaWhatsapp } from 'react-icons/fa';
 import { Helmet } from "react-helmet";
 
 
 function Report() {
+  const navigate = useNavigate(); 
   const location = useLocation();
   const searchData = location.state?.searchData?.data || [];
   console.log("searchData----",searchData)
@@ -484,19 +485,17 @@ const getStatusLabel = (status, followupDate) => {
   
   
   const handleDelete = () => {
+  
+  
     if (selectedLead && selectedLead._id) {
       if (window.confirm("Are you sure you want to delete this lead?")) {
-
-        // `https://makemydocuments.nakshatranamahacreations.in/delete-lead.php?id=${selectedLead.id}`
         axios
-          .delete(`${process.env.REACT_APP_API_URL}/api/lead/deleteLead/${selectedLead._id}`)
+          .delete(
+            `${process.env.REACT_APP_API_URL}/api/lead/deleteLead/${selectedLead._id}`
+          )
           .then((response) => {
-            if (response.data.status === "success") {
-              alert("Lead deleted successfully!");
-              window.location.reload(); // Reload the page after success
-            } else {
-              alert(`Error: ${response.data.message}`);
-            }
+            alert("Lead deleted successfully!");
+            navigate("/home"); // Redirect to the home page or any other page
           })
           .catch((error) => {
             console.error("Error:", error);
@@ -507,6 +506,7 @@ const getStatusLabel = (status, followupDate) => {
       alert("Admin data or lead ID is missing.");
     }
   };
+
   
   
   
