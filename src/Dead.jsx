@@ -535,11 +535,12 @@ function Dead({ selectedItem }) {
         Mobile Number <FaFilter style={styles.icon} onClick={() => handleFilterClick("mobileNumber")} />
       </th>
       <th style={styles.tableHeader}>
-        Service <FaFilter style={styles.icon} onClick={() => handleFilterClick("service")} />
-      </th>
-      <th style={styles.tableHeader}>
         District <FaFilter style={styles.icon} onClick={() => handleFilterClick("district")} />
       </th>
+      <th style={styles.tableHeader}>
+        Service <FaFilter style={styles.icon} onClick={() => handleFilterClick("service")} />
+      </th>
+     
       <th style={styles.tableHeader}>
         Paid Amount <FaFilter style={styles.icon} />
       </th>
@@ -565,12 +566,13 @@ function Dead({ selectedItem }) {
           {lead.mobilenumber || "N/A"}
         </td>
         <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
+          {lead.district || "N/A"}
+        </td>
+        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
   {lead.service === "PassPort" ? "Passport" : lead.service}
 </td>
 
-        <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
-          {lead.district || "N/A"}
-        </td>
+       
         <td style={styles.tableCell} onClick={() => handleRowClick(lead)}>
           {lead.paidAmount || "0.00"}
         </td>
@@ -660,15 +662,7 @@ function Dead({ selectedItem }) {
             </div>
 
             <div style={styles.row}>
-              <div style={styles.col}>
-                <strong>Name:</strong>
-                <input
-                  type="text"
-                  value={selectedLead.name}
-                  style={{ ...styles.input, textTransform: "uppercase" }}
-                />
-              </div>
-              <div style={styles.col}>
+            <div style={styles.col}>
                 <strong>Service:</strong>
                 <input
                   type="text"
@@ -676,18 +670,17 @@ function Dead({ selectedItem }) {
                   style={{ ...styles.input, textTransform: "uppercase" }}
                 />
               </div>
-              {selectedLead?.source && (
-                <div style={styles.col}>
-                  <strong>Source:</strong>
-                  <input
-                    type="text"
-                    value={selectedLead.source}
-                    style={{ ...styles.input, textTransform: "uppercase" }}
-                  />
-                </div>
-              )}
+              {/* <div style={styles.col}>
+                <strong>Name:</strong>
+                <input
+                  type="text"
+                  value={selectedLead.name}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
 
-              {selectedLead?.service !== "MSME" &&
+              </div> */}
+
+{selectedLead?.service !== "MSME" &&
                 selectedLead?.service !== "SeniorCitizen" &&
                 selectedLead?.service !== "Food License(FSSAI)" &&
                 selectedLead?.applying_for && (
@@ -700,9 +693,19 @@ function Dead({ selectedItem }) {
                     />
                   </div>
                 )}
-            </div>
-            <div style={styles.row}>
-            {selectedLead?.source !== "contact page" && (
+             
+              {selectedLead?.source && (
+                <div style={styles.col}>
+                  <strong>Source:</strong>
+                  <input
+                    type="text"
+                    value={selectedLead.source}
+                    style={{ ...styles.input, textTransform: "uppercase" }}
+                  />
+                </div>
+              )}
+
+{selectedLead?.source !== "contact page" && (
               <div style={styles.col}>
                 <strong>Amount:</strong>
                 <input
@@ -712,6 +715,9 @@ function Dead({ selectedItem }) {
                 />
               </div>
             )}
+            </div>
+            <div style={styles.row}>
+            
               <div style={styles.col}>
                 <strong>Status:</strong>
                 <input
@@ -729,12 +735,32 @@ function Dead({ selectedItem }) {
                   style={{ ...styles.input, textTransform: "uppercase" }}
                 />
               </div>
+              {selectedLead?.service === "Pancard" && selectedLead?.applying_for !== "newPanCard" && (
+  <div style={styles.col}>
+    <strong>Existing Pan Card Number:</strong>
+    <input
+      type="text"
+      value={selectedLead?.existingpancardnumber || ""}
+      style={{ ...styles.input, textTransform: "uppercase" }}
+      placeholder="Enter Existing PAN Card Number"
+    />
+  </div>
+)}
+
+              <div style={styles.col}>
+                <strong>Name:</strong>
+                <input
+                  type="text"
+                  value={selectedLead.name}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
             </div>
 
             <div style={styles.row}>
   {selectedLead?.source !== "contact page" && (
     <>
-{selectedLead?.service !== "Rental Agreement" && selectedLead?.service !== "Lease Agreement" && (
+{selectedLead?.service !== "Rental Agreement" && selectedLead?.service !== "Lease Agreement" && selectedLead?.service !== "Pancard" && (
     <div style={styles.col}>
         <strong>Address:</strong>
         <input
@@ -747,7 +773,7 @@ function Dead({ selectedItem }) {
 )}
 
 
-
+{ selectedLead?.service !== "Pancard" && (
       <div style={styles.col}>
         <strong>State:</strong>
         <input
@@ -756,6 +782,8 @@ function Dead({ selectedItem }) {
           style={{ ...styles.input, textTransform: "uppercase" }}
         />
       </div>
+      )}
+      { selectedLead?.service !== "Pancard" && (
       <div style={styles.col}>
         <strong>District:</strong>
         <input
@@ -764,11 +792,13 @@ function Dead({ selectedItem }) {
           style={{ ...styles.input, textTransform: "uppercase" }}
         />
       </div>
+         )}
+      
     </>
   )}
 </div>
             <div style={styles.row}>
-            {selectedLead?.source !== "contact page" && (
+            {selectedLead?.source !== "contact page" &&  selectedLead?.service !== "Pancard" && (
     <div style={styles.col}>
       <strong>Pin Code:</strong>
       <input
@@ -778,6 +808,7 @@ function Dead({ selectedItem }) {
       />
     </div>
   )}
+    { selectedLead?.service !== "Pancard" && (
               <div style={styles.col}>
                 <strong>Email ID:</strong>
                 <input
@@ -786,6 +817,8 @@ function Dead({ selectedItem }) {
                   style={{ ...styles.input, textTransform: "uppercase" }}
                 />
               </div>
+    )}
+      { selectedLead?.service !== "Pancard" && (
               <div style={styles.col}>
                 <strong>Mobile Number:</strong>
                 <input
@@ -794,6 +827,7 @@ function Dead({ selectedItem }) {
                   style={{ ...styles.input, textTransform: "uppercase" }}
                 />
               </div>
+      )}
             </div>
 
             {/* Render detailed info for "Pancard" */}
@@ -801,26 +835,7 @@ function Dead({ selectedItem }) {
             {selectedLead?.source !== "contact page" && selectedLead?.service === "Pancard" && (
               <>
                 <div style={styles.row}>
-                  {selectedLead?.applying_for !== "newPanCard" && (
-                    <div style={styles.col}>
-                      <strong>Existing Pan Card Number:</strong>
-                      <input
-                        type="text"
-                        value={selectedLead?.existingpancardnumber}
-                        style={{ ...styles.input, textTransform: "uppercase" }}
-                      />
-                    </div>
-                  )}
-                  <div style={styles.col}>
-                    <strong>Aadhar Number:</strong>
-                    <input
-                      type="text"
-                      value={selectedLead?.adharnumber}
-                      style={{ ...styles.input, textTransform: "uppercase" }}
-                    />
-                  </div>
-
-                  <div style={styles.col}>
+                <div style={styles.col}>
                     <strong>Date of Birth:</strong>
                     <input
                       type="text"
@@ -828,8 +843,14 @@ function Dead({ selectedItem }) {
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
-                </div>
-                <div style={styles.row}>
+                  <div style={styles.col}>
+                    <strong>Gender:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.gender}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
                   <div style={styles.col}>
                     <strong>Father Name:</strong>
                     <input
@@ -838,8 +859,13 @@ function Dead({ selectedItem }) {
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
+                 
+                 
 
-                  <div style={styles.col}>
+                
+                </div>
+                <div style={styles.row}>
+                <div style={styles.col}>
                     <strong>Mother Name:</strong>
                     <input
                       type="text"
@@ -856,15 +882,20 @@ function Dead({ selectedItem }) {
                     />
                   </div>
                   <div style={styles.col}>
-                    <strong>Gender:</strong>
+                    <strong>Aadhar Number:</strong>
                     <input
                       type="text"
-                      value={selectedLead?.gender}
+                      value={selectedLead?.adharnumber}
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
+                
+ 
+                  
+                
 
                 </div>
+                <div style={styles.row}>
                 <div style={styles.col}>
                     <strong>House No. and Street Name:</strong>
                     <input
@@ -873,6 +904,61 @@ function Dead({ selectedItem }) {
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
+                  <div style={styles.col}>
+        <strong>Address:</strong>
+        <input
+            type="text"
+            value={selectedLead?.address}
+            style={{ ...styles.input, textTransform: "uppercase" }}
+            placeholder="Enter Address"
+        />
+    </div>
+    <div style={styles.col}>
+        <strong>State:</strong>
+        <input
+          type="text"
+          value={selectedLead?.state}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+                  </div>
+                  <div style={styles.row}>
+                  <div style={styles.col}>
+        <strong>District:</strong>
+        <input
+          type="text"
+          value={selectedLead?.district}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+      <div style={styles.col}>
+      <strong>Pin Code:</strong>
+      <input
+        type="text"
+        value={selectedLead?.pincode}
+        style={{ ...styles.input, textTransform: "uppercase" }}
+      />
+    </div>
+    <div style={styles.col}>
+                <strong>Mobile Number:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.mobilenumber}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+      </div>
+      <div style={styles.row}>
+      <div style={styles.col}>
+                <strong>Email ID:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.email}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+        </div>
+
               </>
             )}
 
@@ -1967,7 +2053,7 @@ function Dead({ selectedItem }) {
           >
                <table className="mobile-leads-table" style={{ width: "100%", borderCollapse: "collapse" }}>
   <thead>
-    <tr style={{ backgroundColor: "#f5f5f5", borderBottom: "2px solid black" }}>
+    <tr style={{ backgroundColor: "#b0b9c8", borderBottom: "2px solid black" }}>
       <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>Sl.No</th>
       <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
         Date <FaFilter style={styles.icon} onClick={() => handleFilterClick("date")} />
@@ -1976,11 +2062,12 @@ function Dead({ selectedItem }) {
         Name <FaFilter style={styles.icon} onClick={() => handleFilterClick("name")} />
       </th>
       <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
-              District <FaFilter style={styles.icon} onClick={() => handleFilterClick("district")} />
-            </th>
-            <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
               Mobile Number <FaFilter style={styles.icon} onClick={() => handleFilterClick("mobileNumber")} />
             </th>
+      <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
+              District <FaFilter style={styles.icon} onClick={() => handleFilterClick("district")} />
+            </th>
+           
       <th style={{ padding: "10px", textAlign: "left", borderRight: "1px solid #ddd" }}>
         Service <FaFilter style={styles.icon} onClick={() => handleFilterClick("service")} />
       </th>
@@ -2005,11 +2092,12 @@ function Dead({ selectedItem }) {
           {lead.name || "N/A"}
         </td>
         <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => handleRowClick(lead)}>
-          {lead.district}
-        </td>
-        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => handleRowClick(lead)}>
           {lead.mobilenumber}
         </td>
+        <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => handleRowClick(lead)}>
+          {lead.district}
+        </td>
+      
         <td style={{ padding: "10px", borderRight: "1px solid #ddd" }} onClick={() => handleRowClick(lead)}>
   {lead.service === "PassPort" ? "Passport" : lead.service}
 </td>
@@ -2028,21 +2116,30 @@ function Dead({ selectedItem }) {
           </button>
         </td>
         {adminData?.role === "admin" && (
-          <td style={{ padding: "10px" }}>
-            <select
-              value={lead.assign || "Select lead user"}
-              onChange={(e) => handleAssignChange(lead._id, e.target.value)}
-              style={{ padding: "5px", borderRadius: "5px", border: "1px solid #ccc", width: "200%" }}
-            >
-              <option value="Select lead user">Select lead User</option>
-              {users.map((user, userIndex) => (
-                <option key={userIndex} value={user.name}>
-                  {user.name}
-                </option>
-              ))}
-            </select>
-          </td>
-        )}
+  <td style={{ padding: "10px", minWidth: "200px" }}>
+    <select
+      value={lead.assign || "Select lead user"}
+      onChange={(e) => handleAssignChange(lead._id, e.target.value)}
+      style={{
+        width: "100%", // Ensures the dropdown fills the entire cell width
+        minWidth: "180px", // Minimum width for better visibility
+        maxWidth: "100%", // Prevents overflow
+        padding: "8px",
+        borderRadius: "4px",
+        border: "1px solid #ccc",
+        fontSize: "14px",
+        backgroundColor: "#fff",
+      }}
+    >
+      <option value="Select lead user">Select lead user</option>
+      {users.map((user, userIndex) => (
+        <option key={userIndex} value={user.name}>
+          {user.name}
+        </option>
+      ))}
+    </select>
+  </td>
+)}
       </tr>
     ))}
   </tbody>
@@ -2100,10 +2197,21 @@ function Dead({ selectedItem }) {
               Lead Details
             </h2>
 
-            {/* Date & Time Row */}
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", marginBottom: "10px" }}>
+          {/* Date & Time Row */}
+          {selectedLead?.service !== "Pancard" && (
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                marginBottom: "10px",
+              }}
+            >
               {["Date", "Time"].map((label, index) => (
-                <div key={index} style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
+                <div
+                  key={index}
+                  style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+                >
                   <strong>{label}:</strong>
                   <input
                     type="text"
@@ -2119,30 +2227,42 @@ function Dead({ selectedItem }) {
                 </div>
               ))}
             </div>
+            )}
 
             {/* General Info */}
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", marginBottom: "10px" }}>
-            {[
-    { label: "Order Id", key: "orderId" },
-    { label: "Name", key: "name" },
-    { label: "Service", key: "service" }
-  ].map(({ label, key }, index) => (
-    <div key={index} style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-      <strong>{label}:</strong>
-      <input
-        type="text"
-        value={selectedLead?.[key] || ""}
-        style={{
-          width: "100%",
-          padding: "10px",
-          borderRadius: "5px",
-          border: "1px solid #ccc",
-          fontSize: "16px",
-          textTransform: "uppercase",
-        }}
-      />
-    </div>
-  ))}
+            {selectedLead?.service !== "Pancard" && (
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                marginBottom: "10px",
+              }}
+            >
+              {[
+                { label: "Order Id", key: "orderId" },
+                { label: "Name", key: "name" },
+                { label: "Service", key: "service" },
+              ].map(({ label, key }, index) => (
+                <div
+                  key={index}
+                  style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+                >
+                  <strong>{label}:</strong>
+                  <input
+                    type="text"
+                    value={selectedLead?.[key] || ""}
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                      fontSize: "16px",
+                      textTransform: "uppercase",
+                    }}
+                  />
+                </div>
+              ))}
 
               <div style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
                 <strong>Assigned User:</strong>
@@ -2160,28 +2280,32 @@ function Dead({ selectedItem }) {
                 />
               </div>
 
-              {/* Conditionally render Source field only if it exists */}
-              {selectedLead?.source && (
-                <div style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-                  <strong>Source:</strong>
-                  <input
-                    type="text"
-                    value={selectedLead.source}
-                    style={{
-                      width: "100%",
-                      padding: "10px",
-                      borderRadius: "5px",
-                      border: "1px solid #ccc",
-                      fontSize: "16px",
-                      textTransform: "uppercase",
-                    }}
-                  />
-                </div>
-              )}
+            
             </div>
+            )}
 
-           
-{selectedLead?.source?.toLowerCase() !== "contact page" && (
+{/* Conditionally render Source field only if it exists */}
+{selectedLead?.source && (
+  <div style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
+    <strong>Source:</strong>
+    <input
+      type="text"
+      value={selectedLead.source}
+      style={{
+        width: "100%",
+        padding: "10px",
+        borderRadius: "5px",
+        border: "1px solid #ccc",
+        fontSize: "16px",
+        textTransform: "uppercase",
+      }}
+      readOnly
+    />
+  </div>
+)}
+
+
+{selectedLead?.service !== "Pancard" && selectedLead?.source?.toLowerCase() !== "contact page" && (
   <div
     style={{
       display: "flex",
@@ -2195,7 +2319,7 @@ function Dead({ selectedItem }) {
       if (
         label === "Address" &&
         (selectedLead?.service === "Rental Agreement" ||
-          selectedLead?.service === "Lease Agreement")
+          selectedLead?.service === "Lease Agreement" ) 
       ) {
         return null; // Do not render the Address field
       }
@@ -2226,6 +2350,7 @@ function Dead({ selectedItem }) {
 )}
 
 
+{selectedLead?.service !== "Pancard" && (
 <div
   style={{
     display: "flex",
@@ -2256,6 +2381,7 @@ function Dead({ selectedItem }) {
     </div>
   ))}
 </div>
+)}
 
 
 
@@ -2264,64 +2390,82 @@ function Dead({ selectedItem }) {
             {/* Conditional Fields Based on Service Type */}
             {selectedLead?.source !== "contact page" && selectedLead?.service === "Pancard" && (
               <>
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    justifyContent: "space-between",
-                    marginBottom: "10px",
-                  }}
-                >
-                  {/* Conditionally Show Existing PAN Card Number */}
-                  {selectedLead?.applying_for !== "newPanCard" && (
-                    <div style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
-                      <strong>Existing Pan Card Number:</strong>
-                      <input
-                        type="text"
-                        value={selectedLead?.existingpancardnumber || ""}
-                        style={{
-                          width: "100%",
-                          padding: "10px",
-                          borderRadius: "5px",
-                          border: "1px solid #ccc",
-                          fontSize: "16px",
-                          textTransform: "uppercase",
-                        }}
-                      />
-                    </div>
-                  )}
+              <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
+      marginBottom: "10px",
+    }}
+  >
+    {[
+      { label: "Date", key: "date" },
+      { label: "Time", key: "time" },
+      { label: "Order Id", key: "orderId" },
+      { label: "Service", key: "service" },
+      { label: "Applying For", key: "applying_for" },
+      { label: "Amount", key: "paidAmount" },
+      { label: "Status", key: "paymentStatus" },
+      { label: "Assigned User", key: "assign" },
+      { label: "Name", key: "name" },
+      { label: "Date of Birth", key: "dob" },
+      { label: "Gender", key: "gender" },
+      { label: "Father Name", key: "fathername" },
+      { label: "Mother Name", key: "mothername" },
+      { label: "Print on PAN Card", key: "printOnPanCard" },
+      { label: "Aadhar Number", key: "adharnumber" },
+      { label: "House No. and Street Name", key: "placeofbirth" },
+      { label: "Address", key: "address" },
+      { label: "State", key: "state" },
+      { label: "District", key: "district" },
+      { label: "Pin Code", key: "pincode" },
+      { label: "Mobile Number", key: "mobilenumber" },
+      { label: "Email ID", key: "email" },
+    ].map(({ label, key }, index) => (
+      <div
+        key={index}
+        style={{ flex: "1", minWidth: "48%", margin: "5px" }}
+      >
+        <strong>{label}:</strong>
+        <input
+          type="text"
+          value={selectedLead?.[key] || ""}
+          style={{
+            width: "100%",
+            padding: "10px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+            fontSize: "16px",
+            textTransform: "uppercase",
+          }}
+          readOnly
+        />
+      </div>
+    ))}
 
-                  {[
-                    { key: "adharnumber", label: "Aadhar Number" },
-                    { key: "dob", label: "Date of Birth" },
-                    { key: "fathername", label: "Father Name" },
-                    { key: "mothername", label: "Mother Name" },
-                    { key: "printOnPanCard", label: "Print on PAN Card" },
-                    { key: "gender", label: "Gender" },
-                    {key : "placeofbirth", label : "House No. and Street Name"}
-                  ].map((field, index) => (
-                    <div
-                      key={index}
-                      style={{ flex: "1", minWidth: "48%", margin: "5px" }}
-                    >
-                      <strong>{field.label}:</strong>
-                      <input
-                        type="text"
-                        value={selectedLead?.[field.key] || ""}
-                        style={{
-                          width: "100%",
-                          padding: "10px",
-                          borderRadius: "5px",
-                          border: "1px solid #ccc",
-                          fontSize: "16px",
-                          textTransform: "uppercase",
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
+    {/* Conditionally Show Existing PAN Card Number if not applying for new PAN */}
+    {selectedLead?.applying_for !== "newPanCard" && (
+      <div style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
+        <strong>Existing Pan Card Number:</strong>
+        <input
+          type="text"
+          value={selectedLead?.existingpancardnumber || ""}
+          style={{
+            width: "100%",
+            padding: "10px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+            fontSize: "16px",
+            textTransform: "uppercase",
+          }}
+          readOnly
+        />
+      </div>
+    )}
+  </div>
               </>
             )}
+
 
             {/* Two-Wheeler, Four-Wheeler & Commercial Vehicle Insurance */}
             {[
