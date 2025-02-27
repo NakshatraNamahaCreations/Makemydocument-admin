@@ -30,7 +30,7 @@ export default function PaytmPayment() {
 
       console.log("Sending Payload:", payload);
 
-      const response = await axios.post("https://api.makemydocuments.in/api/PG/paytm/initiate", payload,{
+      const response = await axios.post("https://api.makemydocuments.com/api/PG/paytm/initiate", payload,{
         headers:{
             "Content-Type":"application/json",
         }

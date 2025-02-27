@@ -788,7 +788,7 @@ function TodayFollowUp({selectedItem}) {
               </div>
 )}
             </div>
-
+            { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" &&(
             <div style={styles.row}>
   {selectedLead?.source !== "contact page" && (
     <>
@@ -829,6 +829,8 @@ function TodayFollowUp({selectedItem}) {
     </>
   )}
 </div>
+            )}
+              { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" &&(
             <div style={styles.row}>
             {selectedLead?.source !== "contact page" &&  selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && (
     <div style={styles.col}>
@@ -861,6 +863,7 @@ function TodayFollowUp({selectedItem}) {
               </div>
       )}
             </div>
+              )}
 
             {/* Render detailed info for "Pancard" */}
             
@@ -1856,9 +1859,17 @@ function TodayFollowUp({selectedItem}) {
                 </div>
               </>
             )}
-            {selectedLead?.service === "SeniorCitizen" && (
+          {selectedLead?.service === "SeniorCitizen" && (
               <>
                 <div style={styles.row}>
+                 <div style={styles.col}>
+                    <strong>Date of Birth:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.dob}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
                   <div style={styles.col}>
                     <strong> Gender:</strong>
                     <input
@@ -1867,14 +1878,7 @@ function TodayFollowUp({selectedItem}) {
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
-                  <div style={styles.col}>
-                    <strong>Date of Birth:</strong>
-                    <input
-                      type="text"
-                      value={selectedLead?.dob}
-                      style={{ ...styles.input, textTransform: "uppercase" }}
-                    />
-                  </div>
+                 
                   <div style={styles.col}>
                     <strong>Blood Group:</strong>
                     <input
@@ -1884,6 +1888,61 @@ function TodayFollowUp({selectedItem}) {
                     />
                   </div>
                 </div>
+                <div style={styles.row}>
+                <div style={styles.col}>
+        <strong>Address:</strong>
+        <input
+            type="text"
+            value={selectedLead?.address}
+            style={{ ...styles.input, textTransform: "uppercase" }}
+            placeholder="Enter Address"
+        />
+    </div>
+    <div style={styles.col}>
+        <strong>State:</strong>
+        <input
+          type="text"
+          value={selectedLead?.state}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+      <div style={styles.col}>
+        <strong>District:</strong>
+        <input
+          type="text"
+          value={selectedLead?.district}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+
+                </div>
+                <div style={styles.row}>
+                <div style={styles.col}>
+      <strong>Pin Code:</strong>
+      <input
+        type="text"
+        value={selectedLead?.pincode}
+        style={{ ...styles.input, textTransform: "uppercase" }}
+      />
+    </div>
+    <div style={styles.col}>
+                <strong>Mobile Number:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.mobilenumber}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+              <div style={styles.col}>
+                <strong>Email ID:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.email}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+
+    </div>
               </>
             )}
              
@@ -2332,7 +2391,7 @@ function TodayFollowUp({selectedItem}) {
       
            
             {/* Date & Time Row */}
-            {selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" &&(
+            {selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" &&(
             <div
               style={{
                 display: "flex",
@@ -2364,7 +2423,7 @@ function TodayFollowUp({selectedItem}) {
             )}
 
             {/* General Info */}
-            {selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && (
+            {selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && (
             <div
               style={{
                 display: "flex",
@@ -2439,7 +2498,7 @@ function TodayFollowUp({selectedItem}) {
 )}
 
 
-{selectedLead?.service !== "Pancard" && selectedLead?.source?.toLowerCase() !== "contact page" && selectedLead?.service !== "PassPort" && (
+{selectedLead?.service !== "Pancard" && selectedLead?.source?.toLowerCase() !== "contact page" && selectedLead?.service !== "PassPort" &&  selectedLead?.service !== "SeniorCitizen" &&(
   <div
     style={{
       display: "flex",
@@ -2484,7 +2543,7 @@ function TodayFollowUp({selectedItem}) {
 )}
 
 
-{selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" &&(
+{selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" &&(
 <div
   style={{
     display: "flex",
@@ -2984,43 +3043,59 @@ function TodayFollowUp({selectedItem}) {
                 </div>
               </>
             )}
-            {selectedLead?.service === "SeniorCitizen" && (
-              <>
+
+             {selectedLead?.source !== 'contact page' && selectedLead?.service === 'SeniorCitizen' && (
+    <>
+        <div
+            style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+                marginBottom: '10px',
+            }}
+        >
+            {[
+                { label: 'Date', key: 'date' },
+                { label: 'Time', key: 'time' },
+                { label: 'Order Id', key: 'orderId' },
+                { label: 'Service', key: 'service' },
+                { label: 'Amount', key: 'paidAmount' },
+                { label: 'Status', key: 'paymentStatus' },
+                { label: 'Assigned User', key: 'assign' },
+                { label: 'Name', key: 'name' },
+                { label: 'Date of Birth', key: 'dob' },
+                { label: 'Gender', key: 'gender' },
+                { label: 'Blood Group', key: 'bloodgroup' },
+                { label: 'Address', key: 'address' },
+                { label: 'State', key: 'state' },
+                { label: 'District', key: 'district' },
+                { label: 'Pin Code', key: 'pincode' },
+                { label: 'Mobile Number', key: 'mobilenumber' },
+                { label: 'Email ID', key: 'email' },
+            ].map(({ label, key }, index) => (
                 <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    justifyContent: "space-between",
-                    marginBottom: "10px",
-                  }}
+                    key={index}
+                    style={{ flex: '1', minWidth: '48%', margin: '5px' }}
                 >
-                  {[
-                    { key: "gender", label: "Gender" },
-                    { key: "dob", label: "Date of Birth" },
-                    { key: "bloodgroup", label: "Blood Group" },
-                  ].map((field, index) => (
-                    <div
-                      key={index}
-                      style={{ flex: "1", minWidth: "48%", margin: "5px" }}
-                    >
-                      <strong>{field.label}:</strong>
-                      <input
+                    <strong>{label}:</strong>
+                    <input
                         type="text"
-                        value={selectedLead?.[field.key] || ""}
+                        value={selectedLead?.[key] || ''}
                         style={{
-                          width: "100%",
-                          padding: "10px",
-                          borderRadius: "5px",
-                          border: "1px solid #ccc",
-                          fontSize: "16px",
-                          textTransform: "uppercase",
+                            width: '100%',
+                            padding: '10px',
+                            borderRadius: '5px',
+                            border: '1px solid #ccc',
+                            fontSize: '16px',
+                            textTransform: 'uppercase',
                         }}
-                      />
-                    </div>
-                  ))}
+                        readOnly
+                    />
                 </div>
-              </>
-            )}
+            ))}
+        </div>
+    </>
+)}
               {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Clearance Certificate" && (
               <>
                 <div

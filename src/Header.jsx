@@ -48,6 +48,12 @@ console.log ( selectedItem ,"selectedItem");
     };
   }, []);
 
+//   useEffect(() => {
+//     if (selectedItem) {
+//         setLocalQuery("");
+//     }
+// }, [selectedItem]);
+
   const handleSearch = async () => {
     if (!localQuery.trim()) {
         setError("Search term is required.");
