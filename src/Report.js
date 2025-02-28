@@ -869,7 +869,7 @@ const getStatusLabel = (status, followupDate) => {
               </div>
 )}
             </div>
-            { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" &&(
+            { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" &&(
             <div style={styles.row}>
   {selectedLead?.source !== "contact page" && (
     <>
@@ -911,7 +911,7 @@ const getStatusLabel = (status, followupDate) => {
   )}
 </div>
             )}
-               { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" &&(
+               { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" &&(
             <div style={styles.row}>
             {selectedLead?.source !== "contact page" &&  selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" &&  (
     <div style={styles.col}>
@@ -1854,14 +1854,16 @@ const getStatusLabel = (status, followupDate) => {
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
+                  
                   <div style={styles.col}>
-                    <strong>Employment Type:</strong>
+                    <strong>Place Of Birth</strong>
                     <input
                       type="text"
-                      value={selectedLead?.employmentType}
+                      value={selectedLead?.placeofbirth}
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
+                
                 </div>
 
                 <div style={styles.row}>
@@ -1874,25 +1876,83 @@ const getStatusLabel = (status, followupDate) => {
                     />
                   </div>
                   <div style={styles.col}>
-                    <strong>Place Of Birth</strong>
+                    <strong>Employment Type:</strong>
                     <input
                       type="text"
-                      value={selectedLead?.placeofbirth}
+                      value={selectedLead?.employmentType}
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
+                  <div style={styles.col}>
+        <strong>Address:</strong>
+        <input
+            type="text"
+            value={selectedLead?.address}
+            style={{ ...styles.input, textTransform: "uppercase" }}
+            placeholder="Enter Address"
+        />
+    </div>
                 </div>
+                <div style={styles.row}>
                 <div style={styles.col}>
+        <strong>State:</strong>
+        <input
+          type="text"
+          value={selectedLead?.state}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+              
+                  <div style={styles.col}>
+        <strong>District:</strong>
+        <input
+          type="text"
+          value={selectedLead?.district}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+      <div style={styles.col}>
+      <strong>Pin Code:</strong>
+      <input
+        type="text"
+        value={selectedLead?.pincode}
+        style={{ ...styles.input, textTransform: "uppercase" }}
+      />
+    </div>
+                  </div>
+                  <div style={styles.row}>
+                
+    <div style={styles.col}>
                     <strong>Near By Police Station</strong>
                     <input
                       type="text"
                       value={selectedLead?.nearby_police_station}
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
+
                   </div>
+                  <div style={styles.col}>
+                <strong>Mobile Number:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.mobilenumber}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+              <div style={styles.col}>
+                <strong>Email ID:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.email}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+
+
+                    </div>
               </>
             )}
-            {selectedLead?.service === "MSME" && (
+              {selectedLead?.service === "MSME" && (
               <>
                 <div style={styles.row}>
                   <div style={styles.col}>
@@ -1938,7 +1998,64 @@ const getStatusLabel = (status, followupDate) => {
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
+                  <div style={styles.col}>
+        <strong>Address:</strong>
+        <input
+            type="text"
+            value={selectedLead?.address}
+            style={{ ...styles.input, textTransform: "uppercase" }}
+            placeholder="Enter Address"
+        />
+    </div>
+
                 </div>
+                <div style={styles.row}>
+                <div style={styles.col}>
+        <strong>State:</strong>
+        <input
+          type="text"
+          value={selectedLead?.state}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+      <div style={styles.col}>
+        <strong>District:</strong>
+        <input
+          type="text"
+          value={selectedLead?.district}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+      <div style={styles.col}>
+      <strong>Pin Code:</strong>
+      <input
+        type="text"
+        value={selectedLead?.pincode}
+        style={{ ...styles.input, textTransform: "uppercase" }}
+      />
+    </div>
+
+                  </div>
+                  <div style={styles.row}>
+                  <div style={styles.col}>
+                <strong>Mobile Number:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.mobilenumber}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+
+              <div style={styles.col}>
+                <strong>Email ID:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.email}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+
+                  </div>
               </>
             )}
              {selectedLead?.service === "SeniorCitizen" && (
@@ -2047,14 +2164,16 @@ const getStatusLabel = (status, followupDate) => {
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
+                  
                   <div style={styles.col}>
-                    <strong>Employment Type:</strong>
+                    <strong>Place Of Birth</strong>
                     <input
                       type="text"
-                      value={selectedLead?.employmentType}
+                      value={selectedLead?.placeofbirth}
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
+                
                 </div>
 
                 <div style={styles.row}>
@@ -2067,23 +2186,80 @@ const getStatusLabel = (status, followupDate) => {
                     />
                   </div>
                   <div style={styles.col}>
-                    <strong>Place Of Birth</strong>
+                    <strong>Employment Type:</strong>
                     <input
                       type="text"
-                      value={selectedLead?.placeofbirth}
+                      value={selectedLead?.employmentType}
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
+                  <div style={styles.col}>
+        <strong>Address:</strong>
+        <input
+            type="text"
+            value={selectedLead?.address}
+            style={{ ...styles.input, textTransform: "uppercase" }}
+            placeholder="Enter Address"
+        />
+    </div>
                 </div>
+                <div style={styles.row}>
                 <div style={styles.col}>
+        <strong>State:</strong>
+        <input
+          type="text"
+          value={selectedLead?.state}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+              
+                  <div style={styles.col}>
+        <strong>District:</strong>
+        <input
+          type="text"
+          value={selectedLead?.district}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+      <div style={styles.col}>
+      <strong>Pin Code:</strong>
+      <input
+        type="text"
+        value={selectedLead?.pincode}
+        style={{ ...styles.input, textTransform: "uppercase" }}
+      />
+    </div>
+                  </div>
+                  <div style={styles.row}>
+                
+    <div style={styles.col}>
                     <strong>Near By Police Station</strong>
                     <input
                       type="text"
                       value={selectedLead?.nearby_police_station}
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
-                 
-                </div>
+
+                  </div>
+                  <div style={styles.col}>
+                <strong>Mobile Number:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.mobilenumber}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+              <div style={styles.col}>
+                <strong>Email ID:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.email}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+
+
+                    </div>
               </>
             )}
 
@@ -2501,7 +2677,7 @@ const getStatusLabel = (status, followupDate) => {
             </h2>
       
             {/* Date & Time Row */}
-            {selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && (
+            {selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" &&  (
             <div
               style={{
                 display: "flex",
@@ -2533,7 +2709,7 @@ const getStatusLabel = (status, followupDate) => {
             )}
 
             {/* General Info */}
-            {selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" &&(
+            {selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && (
             <div
               style={{
                 display: "flex",
@@ -2608,7 +2784,7 @@ const getStatusLabel = (status, followupDate) => {
 )}
 
 
-{selectedLead?.service !== "Pancard" && selectedLead?.source?.toLowerCase() !== "contact page" && selectedLead?.service !== "PassPort" &&  selectedLead?.service !== "SeniorCitizen" &&(
+{selectedLead?.service !== "Pancard" && selectedLead?.source?.toLowerCase() !== "contact page" && selectedLead?.service !== "PassPort" &&  selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && (
   <div
     style={{
       display: "flex",
@@ -2653,7 +2829,7 @@ const getStatusLabel = (status, followupDate) => {
 )}
 
 
-{selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" &&(
+{selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && (
 <div
   style={{
     display: "flex",
@@ -3069,7 +3245,7 @@ const getStatusLabel = (status, followupDate) => {
   )}
 
        
-       {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Verification Certificate" && (
+{selectedLead?.source !== "contact page" && selectedLead?.service === "Police Verification Certificate" && (
               <>
                 <div
                   style={{
@@ -3079,13 +3255,28 @@ const getStatusLabel = (status, followupDate) => {
                     marginBottom: "10px",
                   }}
                 >
-                  {[
-                    { key: "gender", label: "Gender" },
-                    { key: "dob", label: "Date of Birth" },
-                    { key: "employmentType", label: "Employment Type" },
-                    { key: "qualification", label: "Education Qualification" },
-                    {key : "placeofbirth", label : "Place Of Birth"},
-                    {key : "nearby_police_station", label : "Near By Police Station"},
+                 {[
+        { label: "Date", key: "date" },
+        { label: "Time", key: "time" },
+        { label: "Order Id", key: "orderId" },
+        { label: "Service", key: "service" },
+        { label: "Applying For", key: "applying_for" },
+        { label: "Amount", key: "paidAmount" },
+        { label: "Status", key: "paymentStatus" },
+        { label: "Assigned User", key: "assign" },
+        { label: "Name", key: "name" },
+        { label: "Gender", key: "gender" },
+        { label: "Date of Birth", key: "dob" },
+        { label: "Place Of Birth", key: "placeofbirth" },
+        { label: "Education Qualification", key: "qualification" },
+        { label: "Employment Type", key: "employmentType" },
+        { label: "Address", key: "address" },
+        { label: "State", key: "state" },
+        { label: "District", key: "district" },
+        { label: "Pin Code", key: "pincode" },
+        { label: "Near By Police Station", key: "nearby_police_station" },
+        { label: "Mobile Number", key: "mobilenumber" },
+        { label: "Email ID", key: "email" },
                   ].map((field, index) => (
                     <div
                       key={index}
@@ -3110,7 +3301,7 @@ const getStatusLabel = (status, followupDate) => {
               </>
             )}
 
-            {selectedLead?.service === "MSME" && (
+{selectedLead?.service === "MSME" && (
               <>
                 <div
                   style={{
@@ -3121,6 +3312,14 @@ const getStatusLabel = (status, followupDate) => {
                   }}
                 >
                   {[
+                     { label: "Date", key: "date" },
+                     { label: "Time", key: "time" },
+                     { label: "Order Id", key: "orderId" },
+                     { label: "Service", key: "service" },
+                     { label: "Amount", key: "paidAmount" },
+                     { label: "Status", key: "paymentStatus" },
+                     { label: "Assigned User", key: "assign" },
+        { label: "Name", key: "name" },
                     { key: "adharnumber", label: "Aadhaar Number" },
                     {
                       key: "businessName",
@@ -3132,6 +3331,14 @@ const getStatusLabel = (status, followupDate) => {
                       label: "Date of Incorporation / Registration",
                     },
                     { key: "panNumber", label: "Business PAN Number" },
+                    { label: "Address", key: "address" },
+                    { label: "State", key: "state" },
+                    { label: "District", key: "district" },
+                    { label: "Pin Code", key: "pincode" },
+               
+                    { label: "Mobile Number", key: "mobilenumber" },
+                    { label: "Email ID", key: "email" },
+
                   ].map((field, index) => (
                     <div
                       key={index}
@@ -3207,7 +3414,9 @@ const getStatusLabel = (status, followupDate) => {
         </div>
     </>
 )}
-              {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Clearance Certificate" && (
+
+
+             {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Clearance Certificate" && (
               <>
                 <div
                   style={{
@@ -3218,12 +3427,27 @@ const getStatusLabel = (status, followupDate) => {
                   }}
                 >
                   {[
-                    { key: "gender", label: "Gender" },
-                    { key: "dob", label: "Date of Birth" },
-                    { key: "employmentType", label: "Employment Type" },
-                    { key: "qualification", label: "Education Qualification" },
-                    {key : "placeofbirth", label : "Place Of Birth"},
-                    {key : "nearby_police_station", label : "Near By Police Station"},
+                  { label: "Date", key: "date" },
+                  { label: "Time", key: "time" },
+                  { label: "Order Id", key: "orderId" },
+                  { label: "Service", key: "service" },
+                  { label: "Applying For", key: "applying_for" },
+                  { label: "Amount", key: "paidAmount" },
+                  { label: "Status", key: "paymentStatus" },
+                  { label: "Assigned User", key: "assign" },
+                  { label: "Name", key: "name" },
+                  { label: "Gender", key: "gender" },
+                  { label: "Date of Birth", key: "dob" },
+                  { label: "Place Of Birth", key: "placeofbirth" },
+                  { label: "Education Qualification", key: "qualification" },
+                  { label: "Employment Type", key: "employmentType" },
+                  { label: "Address", key: "address" },
+                  { label: "State", key: "state" },
+                  { label: "District", key: "district" },
+                  { label: "Pin Code", key: "pincode" },
+                  { label: "Near By Police Station", key: "nearby_police_station" },
+                  { label: "Mobile Number", key: "mobilenumber" },
+                  { label: "Email ID", key: "email" },
                   ].map((field, index) => (
                     <div
                       key={index}
