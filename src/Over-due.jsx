@@ -499,21 +499,22 @@ console.log(adminData.name);
       console.error("Error during the API call:", error.message);
     }
   };
+  
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/user/getActiveUser`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data && data.status === "success" && Array.isArray(data.data)) {
-          setUsers(data.data); // Set users if the API response is correct
-        } else {
-          console.error("Invalid API response format");
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
+     fetch(`${process.env.REACT_APP_API_URL}/api/user/getActiveUser`)
+       .then((response) => response.json())
+       .then((data) => {
+         if (data && data.user && Array.isArray(data.user)) {
+           setUsers(data.user);
+         } else {
+           console.error("Invalid API response format");
+         }
+       })
+       .catch((error) => {
+         console.error("Error fetching users data:", error);
+       });
+   }, []);
 
    
   console.log("The lead selected",selectedLead);
@@ -614,18 +615,20 @@ console.log(adminData.name);
         </td>
         {adminData?.role === "admin" && (
           <td>
-            <select
-              value={lead.assign || "Select lead user"}
-              onChange={(e) => handleAssignChange(lead._id, e.target.value)}
-              style={styles.select}
-            >
-              <option value="Select lead user">Select lead user</option>
-              {users.map((user, userIndex) => (
-                <option key={userIndex} value={user.name}>
-                  {user.name}
-                </option>
-              ))}
-            </select>
+         <select
+  value={lead.assign}
+  onChange={(e) => handleAssignChange(lead._id, e.target.value)}
+  style={styles.select}
+>
+  <option value="Select lead user">Select lead User</option>
+  {users.map((user, userIndex) => (
+    <option key={userIndex} value={user.name}>
+      {user.name}
+    </option>
+  ))}
+</select>
+
+
           </td>
         )}
       </tr>
