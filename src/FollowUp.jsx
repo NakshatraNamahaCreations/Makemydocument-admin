@@ -775,7 +775,7 @@ function FollowUp({ selectedItem }) {
   </div>
 )}
 
-{ selectedLead?.service !== "PassPort" && (
+{ selectedLead?.service !== "PassPort" && selectedLead?.service !== "Travel Visa" && (
               <div style={styles.col}>
                 <strong>Name:</strong>
                 <input
@@ -786,7 +786,7 @@ function FollowUp({ selectedItem }) {
               </div>
 )}
             </div>
-            { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && (
+            { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" && (
             <div style={styles.row}>
   {selectedLead?.source !== "contact page" && (
     <>
@@ -828,7 +828,7 @@ function FollowUp({ selectedItem }) {
   )}
 </div>
             )}
-             { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" &&(
+             { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" &&(
             <div style={styles.row}>
             {selectedLead?.source !== "contact page" &&  selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" &&(
     <div style={styles.col}>
@@ -1116,18 +1116,10 @@ function FollowUp({ selectedItem }) {
                 </div>
               </>
             )}
-            {selectedLead?.source !== "contact page" && selectedLead?.service === "Travel Visa" && (
+             {selectedLead?.source !== "contact page" && selectedLead?.service === "Travel Visa" && (
               <>
                 <div style={styles.row}>
-                  <div style={styles.col}>
-                    <strong>Gender:</strong>
-                    <input
-                      type="text"
-                      value={selectedLead?.gender}
-                      style={{ ...styles.input, textTransform: "uppercase" }}
-                    />
-                  </div>
-                  <div style={styles.col}>
+                <div style={styles.col}>
                     <strong>Travelling Date:</strong>
                     <input
                       type="text"
@@ -1143,7 +1135,83 @@ function FollowUp({ selectedItem }) {
                       style={{ ...styles.input, textTransform: "uppercase" }}
                     />
                   </div>
+                  <div style={styles.col}>
+                <strong>Name:</strong>
+                <input
+                  type="text"
+                  value={selectedLead.name}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+                  
+                 
+                
                 </div>
+                <div style={styles.row}>
+                <div style={styles.col}>
+                    <strong>Gender:</strong>
+                    <input
+                      type="text"
+                      value={selectedLead?.gender}
+                      style={{ ...styles.input, textTransform: "uppercase" }}
+                    />
+                  </div>
+                  <div style={styles.col}>
+        <strong>Address:</strong>
+        <input
+            type="text"
+            value={selectedLead?.address}
+            style={{ ...styles.input, textTransform: "uppercase" }}
+            placeholder="Enter Address"
+        />
+    </div>
+    <div style={styles.col}>
+        <strong>State:</strong>
+        <input
+          type="text"
+          value={selectedLead?.state}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+
+                  </div>
+                  <div style={styles.row}>
+                  <div style={styles.col}>
+        <strong>District:</strong>
+        <input
+          type="text"
+          value={selectedLead?.district}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+      <div style={styles.col}>
+      <strong>Pin Code:</strong>
+      <input
+        type="text"
+        value={selectedLead?.pincode}
+        style={{ ...styles.input, textTransform: "uppercase" }}
+      />
+    </div>
+    <div style={styles.col}>
+                <strong>Mobile Number:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.mobilenumber}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+
+                    </div>
+
+                    <div style={styles.col}>
+                <strong>Email ID:</strong>
+                <input
+                  type="text"
+                  value={selectedLead?.email}
+                  style={{ ...styles.input, textTransform: "uppercase" }}
+                />
+              </div>
+
               </>
             )}
             
@@ -2578,7 +2646,7 @@ function FollowUp({ selectedItem }) {
             </h2>
 
            {/* Date & Time Row */}
-           {selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" &&(
+           {selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" &&(
             <div
               style={{
                 display: "flex",
@@ -2610,7 +2678,7 @@ function FollowUp({ selectedItem }) {
             )}
 
             {/* General Info */}
-            {selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" &&(
+            {selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" &&(
             <div
               style={{
                 display: "flex",
@@ -2685,7 +2753,7 @@ function FollowUp({ selectedItem }) {
 )}
 
 
-{selectedLead?.service !== "Pancard" && selectedLead?.source?.toLowerCase() !== "contact page" && selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" &&(
+{selectedLead?.service !== "Pancard" && selectedLead?.source?.toLowerCase() !== "contact page" && selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" &&(
   <div
     style={{
       display: "flex",
@@ -2730,7 +2798,7 @@ function FollowUp({ selectedItem }) {
 )}
 
 
-{selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" &&  selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" &&(
+{selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" &&  selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" &&(
 <div
   style={{
     display: "flex",
@@ -2976,9 +3044,26 @@ function FollowUp({ selectedItem }) {
                   }}
                 >
                   {[
-                    { key: "gender", label: "Gender" },
+                      { label: "Date", key: "date" },
+                      { label: "Time", key: "time" },
+                      { label: "Order Id", key: "orderId" },
+                      { label: "Service", key: "service" },
+                      { label: "Applying For", key: "applying_for" },
+                      { label: "Amount", key: "paidAmount" },
+                      { label: "Status", key: "paymentStatus" },
+                      { label: "Assigned User", key: "assign" },
+                     
                     { key: "travellingDate", label: "Travelling Date" },
                     { key: "returningDate", label: "Returning Date", isDate: true },
+                    { label: "Name", key: "name" },
+
+                    { key: "gender", label: "Gender" },
+                    { label: "Address", key: "address" },
+                    { label: "State", key: "state" },
+                    { label: "District", key: "district" },
+                    { label: "Pin Code", key: "pincode" },
+                    { label: "Mobile Number", key: "mobilenumber" },
+                    { label: "Email ID", key: "email" },
                   ].map((field, index) => (
                     <div
                       key={index}

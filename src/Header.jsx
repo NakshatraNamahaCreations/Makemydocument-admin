@@ -3,8 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import userlogo from "../src/images/logo.svg.svg";
 import axios from "axios";
 import ProfileImg from "./Assests/profile.jpg";
+import { useSelector } from "react-redux";
 
-function Header({ selectedItem }) {
+function Header({ selectedItem}) {
+  const clear = useSelector((state) => state.clr?.clear ?? false);
+
+  console.log("clear",clear)
   const [isOffcanvasVisible, setOffcanvasVisible] = useState(false);
   const [localQuery, setLocalQuery] = useState("");
   const [loading, setLoading] = useState(false);
@@ -54,42 +58,89 @@ console.log ( selectedItem ,"selectedItem");
 //     }
 // }, [selectedItem]);
 
-  const handleSearch = async () => {
-    if (!localQuery.trim()) {
-        setError("Search term is required.");
-        return;
+//   const handleSearch = async () => {
+//     if (!localQuery.trim()) {
+//         setError("Search term is required.");
+//         return;
+//     }
+
+//     setLoading(true);
+//     setError("");
+
+//     try {
+//         const response = await axios.post(
+//             `${process.env.REACT_APP_API_URL}/api/search`,
+//             {
+//                 search: localQuery.trim(),
+//                 assign: parsedAdminData?.name, 
+//             }
+//         );
+
+//         if (response.data.status === "success") {
+//             const { data } = response;
+//             navigate("/report", { state: { searchData: data } });
+//         } else {
+//             setError("No results found.");
+//         }
+//     } catch (error) {
+//         console.error("An error occurred while fetching the search results:", error);
+//         setError("Failed to fetch search results. Please try again later.");
+//     } finally {
+//         setLoading(false);
+//     }
+// };
+const handleSearch = async () => {
+  if (!localQuery.trim()) {
+    setError("Search term is required.");
+    return;
+  }
+
+  setLoading(true);
+  setError("");
+
+  try {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/search`,
+      {
+        search: localQuery.trim(),
+        assign: parsedAdminData?.name,
+      }
+    );
+
+    if (response.data.status === "success") {
+      navigate("/report", { state: { searchData: response.data } });
+    } else {
+      setError("No results found.");
     }
-
-    setLoading(true);
-    setError("");
-
-    try {
-        const response = await axios.post(
-            `${process.env.REACT_APP_API_URL}/api/search`,
-            {
-                search: localQuery.trim(),
-                assign: parsedAdminData?.name, 
-            }
-        );
-
-        if (response.data.status === "success") {
-            const { data } = response;
-            navigate("/report", { state: { searchData: data } });
-        } else {
-            setError("No results found.");
-        }
-    } catch (error) {
-        console.error("An error occurred while fetching the search results:", error);
-        setError("Failed to fetch search results. Please try again later.");
-    } finally {
-        setLoading(false);
-    }
+  } catch (error) {
+    console.error("Error fetching search results:", error);
+    setError("Failed to fetch search results. Please try again.");
+  } finally {
+    setLoading(false);
+  }
 };
+
+// useEffect(() => {
+//   if (clearSearch) {
+//       setClearSearch(false); // Reset the flag after clearing
+//   }
+// }, [clearSearch]);
+
+
+useEffect(() => {
+  if (clear) {
+    setLocalQuery(""); // Clear the input field
+  
+  }
+}, [clear]);
+
+
 
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       handleSearch();
+      // setClearSearch("")
     }
   };
 

@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { Helmet } from "react-helmet";
 import { useDispatch } from "react-redux";
-import { setLoading } from "./redux/loaderSlice";
+// import { setLoading } from "./redux/loaderSlice";
 
 function Home() {
   const [counts, setCounts] = useState({
@@ -101,9 +101,9 @@ useEffect(() => {
         );
   
         setfollowupcount(response.data.data.followups ? response.data.data.followups : 0);
-        dispatch(setLoading(false));
+        // dispatch(setLoading(false));
       } catch (error) {
-        dispatch(setLoading(false));
+        // dispatch(setLoading(false));
         console.error("Error fetching follow-up count:", error);
       }
  

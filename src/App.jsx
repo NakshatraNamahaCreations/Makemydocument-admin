@@ -13,6 +13,7 @@ import InProcess from "./InProcess";
 import Converted from "./Converted";
 import Dead from "./Dead";
 import Setting from "./Setting";
+
 import LoginPage from "./LoginPage";
 import MyProfilePage from "./MyProfilePage"; // Import the correct file
 import { SearchProvider } from "./SearchContext"; // Import SearchProvider
@@ -26,6 +27,7 @@ function App() {
   const [selectedItem, setSelectedItem] = useState("Dashboard");
   const [profileImage, setProfileImage] = useState(null);
   const loading = useSelector((state) => state.loader.loading);
+  const [clearSearch, setClearSearch] = useState(false);
 
   const OpenSidebar = () => {
     setOpenSidebarToggle(!openSidebarToggle);
@@ -65,7 +67,7 @@ function App() {
               selectedItem={selectedItem}
               setSelectedItem={setSelectedItem}
             />
-            <Header selectedItem={selectedItem} OpenSidebar={OpenSidebar} profileImage={profileImage} />
+            <Header selectedItem={selectedItem} OpenSidebar={OpenSidebar} profileImage={profileImage}   />
           </>
         )}
         {children}
@@ -97,6 +99,7 @@ function App() {
   element={<ProtectedRoute element={<Report setSelectedItem={setSelectedItem} />} />} 
 />
 
+
             <Route path="/setting" element={<ProtectedRoute element={<Setting />} />} />
             <Route path="/paytms" element={<ProtectedRoute element={<PaytmPayment />} />} />
 
@@ -117,3 +120,5 @@ function App() {
 }
 
 export default App;
+
+ 
