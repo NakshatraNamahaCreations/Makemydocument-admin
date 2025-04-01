@@ -236,8 +236,8 @@ const getStatusLabel = (status, followupDate) => {
  
   if (status.toLowerCase() === "followup") {
     
-    if (followupDate && /^\d{2}\.\d{2}\.\d{4}$/.test(followupDate)) {
-      const [day, month, year] = followupDate.split(".");
+    if (followupDate && /^\d{2}\/\d{2}\/\d{4}$/.test(followupDate)) {
+      const [day, month, year] = followupDate.split("/");
       const followUp = new Date(`${year}-${month}-${day}`);
       
      

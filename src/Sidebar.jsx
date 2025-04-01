@@ -203,7 +203,7 @@ function Sidebar({ selectedItem, setSelectedItem }) {
       </SidebarList>
     </SidebarContainer>
 
-      {/* Overlay to Close Sidebar on Mobile Click */}
+      
       <Overlay show={isMobile && isOpen} onClick={() => setIsOpen(false)} />
     </>
   );

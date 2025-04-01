@@ -585,6 +585,8 @@ function NewLeads({ selectedItem }) {
   // const indexOfFirstLead = indexOfLastLead - leadsPerPage;
   // const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
 
+
+  console.log("currentLeadscurrentLeads",currentLeads)
   return (
     <>
       <Helmet>

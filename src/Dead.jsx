@@ -3619,9 +3619,10 @@ const styles = {
     textAlign: "left",
   },
   title: {
+    textAlign: "center",
     marginBottom: "20px",
-    color: "#333",
     fontSize: "24px",
+    color: "#007bff",
   },
   row: {
     display: "flex",
