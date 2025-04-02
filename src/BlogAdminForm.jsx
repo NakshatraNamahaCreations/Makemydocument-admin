@@ -30,7 +30,7 @@ const BlogAdminForm = () => {
 
   const fetchBlogs = async () => {
     try {
-      const res = await axios.get('https://makemydocuments.com/api/blogs');
+      const res = await axios.get('https://api.makemydocuments.com/api/blogs');
       setBlogs(res.data);
     } catch (error) {
       console.error('Error fetching blogs:', error);
@@ -39,7 +39,7 @@ const BlogAdminForm = () => {
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this blog?')) {
-      await axios.delete(`https://makemydocuments.com/api/blogs/${id}`);
+      await axios.delete(`https://api.makemydocuments.com/api/blogs/${id}`);
       fetchBlogs();
     }
   };
@@ -64,10 +64,10 @@ const BlogAdminForm = () => {
 
     try {
       if (editingId) {
-        await axios.put(`https://makemydocuments.com/api/blogs/${editingId}`, formData);
+        await axios.put(`https://api.makemydocuments.com/api/blogs/${editingId}`, formData);
         setSuccessMessage('Blog updated successfully!');
       } else {
-        await axios.post('https://makemydocuments.com/api/blogs', formData);
+        await axios.post('https://api.makemydocuments.com/api/blogs', formData);
         setSuccessMessage('Blog created successfully!');
       }
 
@@ -208,7 +208,7 @@ const BlogAdminForm = () => {
               <td>{blog.title}</td>
               <td>
                 <img
-                  src={`https://makemydocuments.com/uploads/blogs/${blog.image}`}
+                  src={`https://api.makemydocuments.com/uploads/blogs/${blog.image}`}
                   alt={blog.title}
                   style={{ height: '60px', borderRadius: '4px' }}
                 />
