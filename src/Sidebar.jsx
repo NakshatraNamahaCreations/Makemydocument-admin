@@ -14,6 +14,8 @@ import {
   BsHouseDoor,
   BsList,
 } from "react-icons/bs";
+import { FaRegNewspaper } from "react-icons/fa";
+
 import styled from "styled-components";
 import logo from "./images/logo.svg.svg"; // Adjust path if necessary
 
@@ -145,6 +147,8 @@ function Sidebar({ selectedItem, setSelectedItem }) {
     { id: 8, label: "Converted", path: "/converted", icon: <BsCheckCircle /> },
     { id: 9, label: "Dead", path: "/dead", icon: <BsXCircle /> },
     { id: 10, label: "Settings", path: "/setting", icon: <BsFillGearFill /> },
+    { id: 11, label: "Blogs", path: "/blog", icon: <FaRegNewspaper  /> },
+    
   ];
   const handleNavigation = (path) => {
     if (location.pathname === path) {
@@ -162,7 +166,7 @@ function Sidebar({ selectedItem, setSelectedItem }) {
     adminData && adminData.role === "admin"
       ? menuItems
       : menuItems.filter(
-          (item) => item.label !== "Settings" && item.label !== "Add Leads"
+          (item) => item.label !== "Settings" && item.label !== "Add Leads" && item.label !== "Blogs"
         );
 
   useEffect(() => {

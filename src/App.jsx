@@ -21,6 +21,7 @@ import Report from "./Report";
 import PaytmPayment from "./PaytmPayment";
 import Loading from "./Component/Loading";
 import { useSelector } from "react-redux";
+import BlogAdminForm from "./BlogAdminForm";
 
 function App() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
@@ -102,6 +103,8 @@ function App() {
 
             <Route path="/setting" element={<ProtectedRoute element={<Setting />} />} />
             <Route path="/paytms" element={<ProtectedRoute element={<PaytmPayment />} />} />
+            <Route path="/blog" element={<ProtectedRoute element={<BlogAdminForm />} />} />
+
 
             <Route
             
