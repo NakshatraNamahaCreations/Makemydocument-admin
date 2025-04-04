@@ -829,7 +829,7 @@ const getStatusLabel = (status, followupDate) => {
                 </div>
               )}
 
-{selectedLead?.source !== "contact page" && (
+{selectedLead?.source !== "contact page" && selectedLead?.source !== "Blog page" && (
               <div style={styles.col}>
                 <strong>Amount:</strong>
                 <input
@@ -884,7 +884,7 @@ const getStatusLabel = (status, followupDate) => {
             </div>
             { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" &&(
             <div style={styles.row}>
-  {selectedLead?.source !== "contact page" && (
+  {selectedLead?.source !== "contact page" && selectedLead?.source !== "Blog page" &&(
     <>
 {selectedLead?.service !== "Rental Agreement" && selectedLead?.service !== "Lease Agreement" && selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" &&  (
     <div style={styles.col}>
@@ -926,7 +926,7 @@ const getStatusLabel = (status, followupDate) => {
             )}
                { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" &&(
             <div style={styles.row}>
-            {selectedLead?.source !== "contact page" &&  selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" &&  (
+            {selectedLead?.source !== "contact page" &&  selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && selectedLead?.source !== "Blog page" && (
     <div style={styles.col}>
       <strong>Pin Code:</strong>
       <input
@@ -961,7 +961,7 @@ const getStatusLabel = (status, followupDate) => {
 
             {/* Render detailed info for "Pancard" */}
             
-            {selectedLead?.source !== "contact page" && selectedLead?.service === "Pancard" &&  (
+            {selectedLead?.source !== "contact page" && selectedLead?.service === "Pancard" &&  selectedLead?.source !== "Blog page" &&(
               <>
                 <div style={styles.row}>
                 <div style={styles.col}>
@@ -1213,7 +1213,7 @@ const getStatusLabel = (status, followupDate) => {
                 </div>
               </>
             )}
-            {selectedLead?.source !== "contact page" && selectedLead?.service === "Travel Visa" && (
+            {selectedLead?.source !== "contact page" && selectedLead?.service === "Travel Visa" && selectedLead?.source !== "Blog page" && (
               <>
                 <div style={styles.row}>
                 <div style={styles.col}>
@@ -1312,7 +1312,7 @@ const getStatusLabel = (status, followupDate) => {
               </>
             )}
             
-            {selectedLead?.source !== "contact page" && selectedLead?.service === "Rental Agreement" && (
+            {selectedLead?.source !== "contact page" && selectedLead?.service === "Rental Agreement" && selectedLead?.source !== "Blog page" &&(
               <>
                 <div style={styles.row}>
                   <div style={styles.col}>
@@ -1515,7 +1515,7 @@ const getStatusLabel = (status, followupDate) => {
                   </div>
               </>
             )}
-           {selectedLead?.source !== "contact page" && selectedLead?.service === "Lease Agreement" && (
+           {selectedLead?.source !== "contact page" && selectedLead?.service === "Lease Agreement" && selectedLead?.source !== "Blog page" &&(
               <>
                 <div style={styles.row}>
                   <div style={styles.col}>
@@ -1718,7 +1718,7 @@ const getStatusLabel = (status, followupDate) => {
                   </div>
               </>
             )}
-               {selectedLead?.source !== "contact page" && selectedLead?.service === "PassPort" && (
+               {selectedLead?.source !== "contact page" && selectedLead?.service === "PassPort" && selectedLead?.source !== "Blog page" &&(
               <>
                 <div style={styles.row}>
                   <div style={styles.col}>
@@ -1916,7 +1916,7 @@ const getStatusLabel = (status, followupDate) => {
               </>
             )}
           
-          {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Verification Certificate" && (
+          {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Verification Certificate" && selectedLead?.source !== "Blog page" &&(
               <>
                 <div style={styles.row}>
                   <div style={styles.col}>
@@ -2226,7 +2226,7 @@ const getStatusLabel = (status, followupDate) => {
               </>
             )}
              
-             {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Clearance Certificate" && (
+             {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Clearance Certificate" && selectedLead?.source !== "Blog page" &&(
               <>
                 <div style={styles.row}>
                   <div style={styles.col}>
@@ -2865,7 +2865,7 @@ const getStatusLabel = (status, followupDate) => {
 )}
 
 
-{selectedLead?.service !== "Pancard" && selectedLead?.source?.toLowerCase() !== "contact page" && selectedLead?.service !== "PassPort" &&  selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" && (
+{selectedLead?.service !== "Pancard" && selectedLead?.source?.toLowerCase() !== "contact page" && selectedLead?.service !== "PassPort" &&  selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" && selectedLead?.source !== "Blog page" &&(
   <div
     style={{
       display: "flex",
@@ -2949,7 +2949,7 @@ const getStatusLabel = (status, followupDate) => {
 
 
             {/* Conditional Fields Based on Service Type */}
-            {selectedLead?.source !== "contact page" && selectedLead?.service === "Pancard" && (
+            {selectedLead?.source !== "contact page" && selectedLead?.service === "Pancard" && selectedLead?.source !== "Blog page" &&(
               <>
               <div
     style={{
@@ -3146,7 +3146,7 @@ const getStatusLabel = (status, followupDate) => {
               </>
             )}
 
-{selectedLead?.source !== "contact page" && selectedLead?.service === "Travel Visa" && (
+{selectedLead?.source !== "contact page" && selectedLead?.service === "Travel Visa" && selectedLead?.source !== "Blog page" &&(
               <>
                 <div
                   style={{
@@ -3205,7 +3205,7 @@ const getStatusLabel = (status, followupDate) => {
               </>
             )}
 
-{selectedLead?.source !== 'contact page' && selectedLead?.service === 'PassPort' && (
+{selectedLead?.source !== 'contact page' && selectedLead?.service === 'PassPort' && selectedLead?.source !== "Blog page" && (
     <>
         <div
             style={{
@@ -3276,7 +3276,7 @@ const getStatusLabel = (status, followupDate) => {
 )}
 
 {selectedLead?.source !== "contact page" &&
-  ["Rental Agreement", "Lease Agreement"].includes(selectedLead?.service) && (
+  ["Rental Agreement", "Lease Agreement"].includes(selectedLead?.service) && selectedLead?.source !== "Blog page" &&(
     <>
       <div
         style={{
@@ -3343,7 +3343,7 @@ const getStatusLabel = (status, followupDate) => {
   )}
 
        
-{selectedLead?.source !== "contact page" && selectedLead?.service === "Police Verification Certificate" && (
+{selectedLead?.source !== "contact page" && selectedLead?.service === "Police Verification Certificate" && selectedLead?.source !== "Blog page" &&(
               <>
                 <div
                   style={{
@@ -3460,7 +3460,7 @@ const getStatusLabel = (status, followupDate) => {
                 </div>
               </>
             )}
-                    {selectedLead?.source !== 'contact page' && selectedLead?.service === 'SeniorCitizen' && (
+                    {selectedLead?.source !== 'contact page' && selectedLead?.service === 'SeniorCitizen' && selectedLead?.source !== "Blog page" &&(
     <>
         <div
             style={{
@@ -3514,7 +3514,7 @@ const getStatusLabel = (status, followupDate) => {
 )}
 
 
-             {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Clearance Certificate" && (
+             {selectedLead?.source !== "contact page" && selectedLead?.service === "Police Clearance Certificate" && selectedLead?.source !== "Blog page" && (
               <>
                 <div
                   style={{
