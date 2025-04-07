@@ -86,6 +86,7 @@ const BlogAdminForm = () => {
   };
 
   return (
+    <>
     <div className="container " style={{marginLeft:'100%', width:'380%', marginTop:'40%', fontFamily: "Poppins, sans-serif",}}>
        {/* <h2 className="text-center mb-4">Blog Management</h2> */}
 
@@ -254,6 +255,7 @@ const BlogAdminForm = () => {
   </div>
 )}
     </div>
+    </>
   );
 };
 

@@ -777,16 +777,18 @@ function TodayFollowUp({selectedItem}) {
   </div>
 )}
 
-{ selectedLead?.service !== "PassPort" &&  selectedLead?.service !== "Travel Visa" &&(
-              <div style={styles.col}>
-                <strong>Name:</strong>
-                <input
-                  type="text"
-                  value={selectedLead.name}
-                  style={{ ...styles.input, textTransform: "uppercase" }}
-                />
-              </div>
-)}
+{ 
+  (selectedLead?.source === "contact page" || (selectedLead?.service !== "PassPort" && selectedLead?.service !== "Travel Visa")) && (
+    <div style={styles.col}>
+      <strong>Name:</strong>
+      <input
+        type="text"
+        value={selectedLead.name}
+        style={{ ...styles.input, textTransform: "uppercase" }}
+      />
+    </div>
+  )
+}
             </div>
             { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" &&(
             <div style={styles.row}>
@@ -830,9 +832,17 @@ function TodayFollowUp({selectedItem}) {
   )}
 </div>
             )}
-              { selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" &&(
+            { 
+  (selectedLead?.service !== "Pancard" && 
+   selectedLead?.service !== "PassPort" && 
+   selectedLead?.service !== "SeniorCitizen" && 
+   selectedLead?.service !== "Police Verification Certificate" && 
+   selectedLead?.service !== "Police Clearance Certificate" && 
+   selectedLead?.service !== "MSME" && 
+   selectedLead?.service !== "Travel Visa") || 
+  selectedLead?.source === "contact page" ? (
             <div style={styles.row}>
-            {selectedLead?.source !== "contact page" &&  selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && selectedLead?.source !== "Blog page" && (
+            {selectedLead?.source !== "contact page" &&  selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" &&  selectedLead?.source !== "Blog page" && (
     <div style={styles.col}>
       <strong>Pin Code:</strong>
       <input
@@ -842,7 +852,7 @@ function TodayFollowUp({selectedItem}) {
       />
     </div>
   )}
-    { selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && (
+    {/* { selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && (
               <div style={styles.col}>
                 <strong>Email ID:</strong>
                 <input
@@ -861,10 +871,36 @@ function TodayFollowUp({selectedItem}) {
                   style={{ ...styles.input, textTransform: "uppercase" }}
                 />
               </div>
-      )}
-            </div>
-              )}
+      )} */}
+      { 
+  (selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort") || selectedLead?.source === "contact page" ? (
+    <>
+      {/* Email ID field */}
+      <div style={styles.col}>
+        <strong>Email ID:</strong>
+        <input
+          type="text"
+          value={selectedLead?.email}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
 
+      {/* Mobile Number field */}
+      <div style={styles.col}>
+        <strong>Mobile Number:</strong>
+        <input
+          type="text"
+          value={selectedLead?.mobilenumber}
+          style={{ ...styles.input, textTransform: "uppercase" }}
+        />
+      </div>
+    </>
+  ) : null
+}
+
+            </div>
+ ) : null
+}
             {/* Render detailed info for "Pancard" */}
             
             {selectedLead?.source !== "contact page" && selectedLead?.service === "Pancard" && selectedLead?.source !== "Blog page" && (
@@ -2635,7 +2671,8 @@ function TodayFollowUp({selectedItem}) {
       
            
             {/* Date & Time Row */}
-            {selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" && (
+            {(selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" ) || 
+  selectedLead?.source === "contact page" ?(
             <div
               style={{
                 display: "flex",
@@ -2664,10 +2701,12 @@ function TodayFollowUp({selectedItem}) {
                 </div>
               ))}
             </div>
-            )}
+            ) : null
+}
 
             {/* General Info */}
-            {selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" &&(
+            {(selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" &&  selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa") || 
+  selectedLead?.source === "contact page" ? (
             <div
               style={{
                 display: "flex",
@@ -2719,8 +2758,8 @@ function TodayFollowUp({selectedItem}) {
 
             
             </div>
-            )}
-
+             ) : null
+}
 {/* Conditionally render Source field only if it exists */}
 {selectedLead?.source && (
   <div style={{ flex: "1", minWidth: "48%", margin: "5px" }}>
@@ -2787,7 +2826,8 @@ function TodayFollowUp({selectedItem}) {
 )}
 
 
-{selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" &&(
+{(selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" &&  selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa") || 
+  selectedLead?.source === "contact page" ? (
 <div
   style={{
     display: "flex",
@@ -2818,8 +2858,8 @@ function TodayFollowUp({selectedItem}) {
     </div>
   ))}
 </div>
-)}
-
+) : null
+}
 
 
 
