@@ -13,7 +13,9 @@ const BlogAdminForm = () => {
   const [image, setImage] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [showForm, setShowForm] = useState(false); 
-
+  const [metaTitle, setMetaTitle] = useState('');
+  const [metaDescription, setMetaDescription] = useState('');
+  
 
   useEffect(() => {
     return () => {
@@ -48,6 +50,9 @@ const BlogAdminForm = () => {
     setEditingId(blog._id);
     setTitle(blog.title);
     setDescription(blog.description);
+    setMetaTitle(blog.metaTitle || '');
+setMetaDescription(blog.metaDescription || '');
+
     setImage(null);
     setShowForm(true); 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -60,6 +65,9 @@ const BlogAdminForm = () => {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
+    formData.append('metaTitle', metaTitle);
+formData.append('metaDescription', metaDescription);
+
     if (image) formData.append('image', image);
 
     try {
@@ -147,6 +155,28 @@ const BlogAdminForm = () => {
         />
       </div>
     </div>
+    <div className="row mb-3">
+  <div className="col-md-6">
+    <label className="form-label">Meta Title</label>
+    <input
+      type="text"
+      className="form-control"
+      value={metaTitle}
+      onChange={(e) => setMetaTitle(e.target.value)}
+    />
+  </div>
+  <div className="col-md-6">
+    <label className="form-label">Meta Description</label>
+    <input
+      type="text"
+      className="form-control"
+      value={metaDescription}
+      onChange={(e) => setMetaDescription(e.target.value)}
+      style={{width:"280%", height:'100%'}}
+    />
+  </div>
+</div>
+
 
     <div className="mb-3">
       <label className="form-label">Description</label>
