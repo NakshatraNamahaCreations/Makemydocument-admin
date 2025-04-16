@@ -743,7 +743,7 @@ function Dead({ selectedItem }) {
 )}
 
 { 
-  (selectedLead?.source === "contact page" || (selectedLead?.service !== "PassPort" && selectedLead?.service !== "Travel Visa")) && (
+  (selectedLead?.source === "contact page" && selectedLead?.source === "Blog page" || (selectedLead?.service !== "PassPort" && selectedLead?.service !== "Travel Visa")) && (
     <div style={styles.col}>
       <strong>Name:</strong>
       <input
@@ -805,7 +805,7 @@ function Dead({ selectedItem }) {
    selectedLead?.service !== "Police Clearance Certificate" && 
    selectedLead?.service !== "MSME" && 
    selectedLead?.service !== "Travel Visa") || 
-  selectedLead?.source === "contact page" ? (
+  selectedLead?.source === "contact page" && selectedLead?.source === "Blog page" ? (
             <div style={styles.row}>
             {selectedLead?.source !== "contact page" &&  selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" &&  selectedLead?.source !== "Blog page" && (
     <div style={styles.col}>
@@ -838,7 +838,7 @@ function Dead({ selectedItem }) {
               </div>
       )} */}
       { 
-  (selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort") || selectedLead?.source === "contact page" ? (
+  (selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort") || selectedLead?.source === "contact page" && selectedLead?.source === "Blog page"? (
     <>
       {/* Email ID field */}
       <div style={styles.col}>
@@ -2610,7 +2610,7 @@ function Dead({ selectedItem }) {
 
           {/* Date & Time Row */}
           {(selectedLead?.service !== "Pancard" &&  selectedLead?.service !== "PassPort" && selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa" ) || 
-  selectedLead?.source === "contact page" ?(
+  selectedLead?.source === "contact page" && selectedLead?.source === "Blog page"?(
             <div
               style={{
                 display: "flex",
@@ -2645,7 +2645,7 @@ function Dead({ selectedItem }) {
 
             {/* General Info */}
             {(selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" &&  selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa") || 
-  selectedLead?.source === "contact page" ? (
+  selectedLead?.source === "contact page" && selectedLead?.source === "Blog page" ? (
             <div
               style={{
                 display: "flex",
@@ -2767,7 +2767,7 @@ function Dead({ selectedItem }) {
 
 
 {(selectedLead?.service !== "Pancard" && selectedLead?.service !== "PassPort" &&  selectedLead?.service !== "SeniorCitizen" && selectedLead?.service !== "Police Verification Certificate" && selectedLead?.service !== "Police Clearance Certificate" && selectedLead?.service !== "MSME" && selectedLead?.service !== "Travel Visa") || 
-  selectedLead?.source === "contact page" ? (
+  selectedLead?.source === "contact page" && selectedLead?.source === "Blog page" ? (
 <div
   style={{
     display: "flex",
